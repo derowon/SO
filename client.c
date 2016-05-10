@@ -5,9 +5,16 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include "packages.h"
 
 #define MAXLINE 4096 /*max text line length*/
 #define SERV_PORT 3000 /*port*/
+
+int sendPackage(Package* pack);
+void receivePackage(Package* pack);
+
+Package pack;
+static int SOCKKK;
 
 int
 main(int argc, char **argv)
@@ -41,7 +48,7 @@ main(int argc, char **argv)
   perror("Problem in connecting to the server");
   exit(3);
  }
-
+ SOCKKK = sockfd;
  while (fgets(sendline, MAXLINE, stdin) != NULL) {
 
   send(sockfd, sendline, strlen(sendline), 0);
@@ -56,4 +63,30 @@ main(int argc, char **argv)
  }
 
  exit(0);
+}
+
+
+
+
+int sendPackage(Package* pack){
+  void* data = calloc(pack->size,1);
+  memcpy(data,pack, pack->size);
+  if (send(SOCKKK, data,pack->size,MSG_NOSIGNAL)<0)
+    return -1;
+  free(data);
+  return 0;
+}
+
+void receivePackage(Package* pack){
+  void * data = calloc(4096,1); //change for maxsize constant
+  int buffer_size=0;
+  if ((buffer_size = recv(SOCKKK, data, 4096,0))<0){
+    return;
+  }
+
+  memcpy(pack,data,buffer_size);
+
+  free(data);
+
+  return;
 }
