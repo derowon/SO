@@ -5,12 +5,14 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
+#include "packages.h"
 
 #define MAXLINE 2048 /*max text line length*/
-#define SERV_PORT 3000 /*port*/
+#define SERV_PORT 3686 /*port*/
 #define LISTENQ 24 /*maximum number of client connections*/
 
-
+void respond(Package * data);
+void materias_db(Package * data);
 void handleRequest (int connfd);
 
 int main (int argc, char **argv)
@@ -62,14 +64,38 @@ int main (int argc, char **argv)
 }
 
 void handleRequest(int connfd){
-  char buf[MAXLINE];
+  
+  Package data;
   int n= 0;
-  while ( (n = recv(connfd, buf, MAXLINE,0)) > 0)  {
-   printf("%s","String received from and resent to the client:");
-   puts(buf);
-   send(connfd, buf, n, 0);
+  while ( (n = recv(connfd, &data, sizeof(Package),0)) > 0)  {
+    respond(&data);
+    printf("%s\n",data.data.response);
+
+    respond(&data);
+    /*printf("%s","String received from and resent to the client:");
+    puts(buf);*/
+    send(connfd, data.data.response, n, 0);
+  
   }
+  
   if (n < 0)
    printf("%s\n", "Read error");
   exit(0);
+}
+
+
+void respond(Package * data){
+  switch (data->function){
+    case MATERIAS:
+      materias_db(data);
+      break;
+  }
+  return;
+}
+
+
+void materias_db(Package * data){
+  char* buffer = "LAS MATERIAS\n \n XD \n XJAJA\n....";
+  memcpy(data->data.response, buffer,strlen(buffer));
+  
 }

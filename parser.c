@@ -1,41 +1,23 @@
-#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <string.h>
+#include <arpa/inet.h>
 #include "packages.h"
-
-
-#define TOTAL_COMMANDS 			3
+#include "parser.h"
+#include "comm.h"
+#define TOTAL_COMMANDS 			4
 #define MAX_COMMAND_LENGTH 		50
 #define MAX_ARGUMENTS_LENGTH 	50
 #define TRUE 					1
 #define FALSE					0
 #define MAX_COR 				8
 
-void initCommandList();
-void processAction(char *buffer);
-int commandSelector(char *command);
-void split(char* buffer, char* command, char* arguments);
-int strEquals(char* str1, char* str2);
-
-void parser(char * buff);
-int split2(char* args[], char* buffer);
-
-typedef enum { MATERIAS, CORRELATIVAS, INSCRIBIR_MATERIA, DESINSCRIBIR_MATERIA} functions;
-
-
-int inscribirseMateria_client(int legacy, int subCode);
-int desinscribirseMateria_client(int legacy, int subCode);
-int correlatividades_client(int subCode);
-int materias_client(void);
-
-
-char* inscribirseMateria(int legacy, int subCode);
-char* desinscribirseMateria(int legacy, int subCode);
-char* correlatividades(int subCode);
-char* materias(void);
-
-typedef int (*action)(char *);
-typedef void (* func)();
+int xd =54;
+static int INITIALIZED = 0;
+static int sockfd=0;
 
 typedef struct commandDescriptor
 {
@@ -69,28 +51,13 @@ void initCommandList(){
 	commands[3].handler = (func)&materias_client;
 	commands[3].argCount = 0;
 	commands[3].info = "Permite al usuario ver todas las materias.";
-}
+/*
+	commands[3].key = "Help";
+	commands[3].handler = (func)&help;
+	commands[3].argCount = 0;
+	commands[3].info = "Permite al usuario ver los comandos disponibles.";	
+**/}
 
-/*void processAction(char *buffer){
-	char command[MAX_COMMAND_LENGTH];
-  	char arguments[MAX_ARGUMENTS_LENGTH];
-	int commandId;
-	int response = 0;
-
-	if(strlen(buffer) == 0)
-		return;
-
-	split(buffer, command, arguments);
-
-	commandId = commandSelector(command);
-
-	if(commandId == -1){
-		printf("%s is not a valid command", buffer);
-	} else {
-		response = commands[commandId].handler(arguments);
-	}
-
-}*/
 
 int commandSelector(char* command){
 
@@ -102,26 +69,30 @@ int commandSelector(char* command){
 	return -1;
 }
 
-void parser(char * buff){
+void parser(char * buff, int sock){
+	sockfd=sock;
+	if ( INITIALIZED == 0){
+		INITIALIZED++;
+		initCommandList();
+	}
 	int index, argCount;
 	char flag= 0;
 	char* args [10];
-
+	printf("%s\n.",buff);
 	argCount = split2(args, buff);
 
 	if (argCount == -1){
-		printf("Error\n");
+		printf("Error3\n");
 	}
 
 	argCount -=1;
-
 	for (index = 0; !flag && index < TOTAL_COMMANDS; index++){
 		if (!strcmp(args[0],commands[index].key)){
 			flag =1;
-
 			if (argCount != commands[index].argCount){
 				printf("%i arguments are required and %i were received.\n",commands[index].argCount, argCount);
 			} else {
+				printf("%d\n",index);
 				switch (commands[index].argCount){
 					case 0:
 						commands[index].handler();
@@ -149,9 +120,11 @@ void parser(char * buff){
 int split2(char* args[], char* buffer){
 	int i=0, m=0,j=1;
 	int flag =0, er = 0;
+	printf("Dentro de split   %s\n", buffer);
 	args[0] = buffer;
 	while(buffer[i] && !er){
 		if (buffer[i] == '\n'){
+			buffer[i] = 0 ;
 			er=1;
 		} else if (buffer[i] == ' '&& !flag){
 			buffer[i] = 0;
@@ -166,7 +139,8 @@ int split2(char* args[], char* buffer){
 		i++;
 	}
 	if (er){
-		return -1;
+		printf("er true");
+		//return -1;
 	}
 	return j;
 }
@@ -219,8 +193,8 @@ int strEquals(char* str1, char* str2){
 
 int inscribirseMateria_client(int legacy, int subCode){
 	printf("Intentando completar la solicitud.\n");
-	int result = inscribirseMateria(legacy, subCode);
-	if (result == 1){
+	char * result = inscribirseMateria(legacy, subCode);
+	if (atoi(result) == 1){
 		printf("Inscripcion realizada con exito.\n");
 	}else{
 		printf("Ocurrio un error durante el proceso de inscripcion.\n");
@@ -230,8 +204,8 @@ int inscribirseMateria_client(int legacy, int subCode){
 
 int desinscribirseMateria_client(int legacy, int subCode){
 	printf("Intentando completar la solicitud.\n");
-	int result = desinscribirseMateria(legacy, subCode);
-	if (result == 1){
+	char * result = desinscribirseMateria(legacy, subCode);
+	if (atoi(result) == 1){
 		printf("Se ha eliminado la inscripcion con exito.\n");
 	}else{
 		printf("Ocurrio un error durante el proceso de desinscripcion.\n");
@@ -259,26 +233,28 @@ char* inscribirseMateria(int legacy, int subCode){
 	pack.data.sign.subID= subCode;
 	pack.data.sign.studentID = legacy;
 	pack.size = sizeof(pack);
-	sendPackage(pack);
-	receivePackage(pack);
-	return pack.data.response; 
+	//clientSendPackage(xd, &pack);
+	//clientReceivePackage(xd, &pack);
+	//return pack.data.response; 
+	return "hola";
 }
 char* desinscribirseMateria(int legacy, int subCode){
 	pack.function = DESINSCRIBIR_MATERIA;
 	pack.size = sizeof(pack);
 	pack.data.sign.studentID = legacy;
 	pack.data.sign.subID = subCode;
-	sendPackage(pack);
-	receivePackage(pack);
-	return pack.data.response; 
+//	clientSendPackage(xd, &pack);
+//	clientReceivePackage(xd, &pack);
+	//return pack.data.response; 
+	return "hola";
 }
 char* correlatividades(int subCode){
 	pack.function = CORRELATIVAS;
 	pack.size = sizeof(pack);
 	pack.data.subC = subCode;
-	sendPackage(pack);
-	receivePackage(pack);
-	return pack.data.response; 
+	//clientSendPackage(xd, &pack);
+	//clientReceivePackage(xd, &pack);
+	return "hola";//pack.data.response; 
 
 }
 
@@ -286,7 +262,9 @@ char* correlatividades(int subCode){
 char* materias(void){
 	pack.function = MATERIAS;
 	pack.size= sizeof(pack);
-	sendPackage(pack);
-	receivePackage(pack);
-	return pack.data.response;
+	printf("JEJE");
+	clientSendPackage(sockfd, &pack);
+	clientReceivePackage(sockfd, &pack);
+	//return pack.data.response;
+	return "hola";
 }

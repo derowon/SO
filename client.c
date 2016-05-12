@@ -6,12 +6,11 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include "packages.h"
-
+#include "parser.h"
+#include "comm.h"
 #define MAXLINE 4096 /*max text line length*/
-#define SERV_PORT 3000 /*port*/
+#define SERV_PORT 3686 /*port*/
 
-int sendPackage(Package* pack);
-void receivePackage(Package* pack);
 
 Package pack;
 static int SOCKKK;
@@ -45,12 +44,15 @@ main(int argc, char **argv)
 
  //Connection of the client to the socket
  if (connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr))<0) {
-  perror("Problem in connecting to the server");
+  perror("Problem in connecting to the server:s.");
   exit(3);
  }
  SOCKKK = sockfd;
  while (fgets(sendline, MAXLINE, stdin) != NULL) {
 
+  parser(sendline, sockfd);
+  
+  /*
   send(sockfd, sendline, strlen(sendline), 0);
 
   if (recv(sockfd, recvline, MAXLINE,0) == 0){
@@ -59,34 +61,13 @@ main(int argc, char **argv)
    exit(4);
   }
   printf("%s", "String received from the server: ");
-  fputs(recvline, stdout);
+  fputs(recvline, stdout);*/
  }
 
  exit(0);
 }
 
+//int iConnect(int sockfd.
 
 
 
-int sendPackage(Package* pack){
-  void* data = calloc(pack->size,1);
-  memcpy(data,pack, pack->size);
-  if (send(SOCKKK, data,pack->size,MSG_NOSIGNAL)<0)
-    return -1;
-  free(data);
-  return 0;
-}
-
-void receivePackage(Package* pack){
-  void * data = calloc(4096,1); //change for maxsize constant
-  int buffer_size=0;
-  if ((buffer_size = recv(SOCKKK, data, 4096,0))<0){
-    return;
-  }
-
-  memcpy(pack,data,buffer_size);
-
-  free(data);
-
-  return;
-}
