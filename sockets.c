@@ -33,3 +33,54 @@ void clientReceivePackage(int con,Package* pack){
 
   return;
 }
+
+void handleRequest(int connfd){
+  
+  Package data;
+  int n= 0;
+  while ( (n = recv(connfd, &data, sizeof(Package),0)) > 0)  {
+    respond(&data);
+    printf("%s\n",data.data.response);
+
+    respond(&data);
+    /*printf("%s","String received from and resent to the client:");
+    puts(buf);*/
+    send(connfd, data.data.response, n, 0);
+  
+  }
+  
+  if (n < 0)
+   printf("%s\n", "Read error");
+  exit(0);
+}
+
+int iConnect_client(){
+  struct sockaddr_in servaddr;
+ char sendline[MAXLINE], recvline[MAXLINE];
+
+ //basic check of the arguments
+ //additional checks can be inserted
+ /*if (argc !=2) {
+  perror("Usage: TCPClient <IP address of the server");
+  exit(1);
+ }*/
+
+ //Create a socket for the client
+ //If sockfd<0 there was an error in the creation of the socket
+ if ((sockfd = socket (AF_INET, SOCK_STREAM, 0)) <0) {
+  perror("Problem in creating the socket");
+  exit(2);
+ }
+
+ //Creation of the socket
+ memset(&servaddr, 0, sizeof(servaddr));
+ servaddr.sin_family = AF_INET;
+ servaddr.sin_addr.s_addr= inet_addr("127.0.0.1");
+ servaddr.sin_port =  htons(SERV_PORT); //convert to big-endian order
+
+ //Connection of the client to the socket
+ if (connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr))<0) {
+  perror("Problem in connecting to the server:s.");
+  exit(3);
+ }
+}

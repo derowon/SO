@@ -11,14 +11,15 @@
 #define MAXLINE 4096 /*max text line length*/
 #define SERV_PORT 3686 /*port*/
 
-
+int sockfd = 0;
 Package pack;
 static int SOCKKK;
 
 int
 main(int argc, char **argv)
 {
- int sockfd;
+  char sendline[MAXLINE];
+ /*int sockfd;
  struct sockaddr_in servaddr;
  char sendline[MAXLINE], recvline[MAXLINE];
 
@@ -47,7 +48,9 @@ main(int argc, char **argv)
   perror("Problem in connecting to the server:s.");
   exit(3);
  }
- SOCKKK = sockfd;
+ SOCKKK = sockfd;*/
+
+ iConnect_client();
  while (fgets(sendline, MAXLINE, stdin) != NULL) {
 
   parser(sendline, sockfd);
@@ -67,7 +70,6 @@ main(int argc, char **argv)
  exit(0);
 }
 
-//int iConnect(int sockfd.
 
 
 

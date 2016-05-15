@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "packages.h"
+#include "comm.h"
 
 #define MAXLINE 2048 /*max text line length*/
 #define SERV_PORT 3686 /*port*/
@@ -63,25 +64,7 @@ int main (int argc, char **argv)
 }
 }
 
-void handleRequest(int connfd){
-  
-  Package data;
-  int n= 0;
-  while ( (n = recv(connfd, &data, sizeof(Package),0)) > 0)  {
-    respond(&data);
-    printf("%s\n",data.data.response);
 
-    respond(&data);
-    /*printf("%s","String received from and resent to the client:");
-    puts(buf);*/
-    send(connfd, data.data.response, n, 0);
-  
-  }
-  
-  if (n < 0)
-   printf("%s\n", "Read error");
-  exit(0);
-}
 
 
 void respond(Package * data){
