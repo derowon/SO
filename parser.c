@@ -129,7 +129,9 @@ int parser(char * buff, int sock){
 
 
 	if (argCount == -1){
+
 		printf("Error\n");
+		return -1;
 	}
 
 	argCount -=1;
@@ -372,9 +374,9 @@ char* materias(void){
 
 int sesion(int user, char *pass){
 
-	printf("\n\nINGRESE A SESION\n");
-	printf("EL USUARIO VALE: %d\n", user);
-	printf("PASSWORD VALE: %s\n", pass);
+	//printf("\n\nINGRESE A SESION\n");
+	//printf("EL USUARIO VALE: %d\n", user);
+//	printf("PASSWORD VALE: %s\n", pass);
 	//pack = (char *)calloc(sizeof(Package),1);
 	pack->function = CHECK_USER;
 	pack->size= sizeof(Package);
@@ -382,8 +384,8 @@ int sesion(int user, char *pass){
 	//pack.pass = pass;
 	pack->studentID  = user;
 	
-	printf("\n\n\n************LO QUE ALMACENE EN DATA COMO USER ES: %d**********\n", pack->studentID);
-	printf("\n\n\n************LO QUE ALMACENE EN DATA COMO PASS ES: %s**********\n", pack->pass);
+	//printf("\n\n\n************LO QUE ALMACENE EN DATA COMO USER ES: %d**********\n", pack->studentID);
+//	printf("\n\n\n************LO QUE ALMACENE EN DATA COMO PASS ES: %s**********\n", pack->pass);
 //	printf("ACA estan los datos %d \n %d \n", pack.data.sign.studentID,pack.data.pass );
 //	printf("ESTOY EN SESION Y ESTOY ENVIANDO ESTA PASSWORD EN UN PAQUETE: %s\n", pass);
 	sendPackage(sockfd, pack);

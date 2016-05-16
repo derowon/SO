@@ -50,27 +50,11 @@ int main(int argc, char *argv[]) {
          isUserLogged = login(buffer,sockfd);
 
       }else{
-         printf("Escribiendo el comando help, usted puede conocer los comandos disponibles.\n");
-         fgets(buffer,255,stdin);
+         printf("ESTOY EN LOGGEado\n");
 
-         /* Send message to the server */
-          n = write(sockfd, buffer, strlen(buffer));
+         
 
-          if (n < 0) {
-            perror("ERROR writing to socket");
-            exit(1);
-
-            /* Now read server response */
-            bzero(buffer,256);
-            n = read(sockfd, buffer, 255);
-
-            if (n < 0) {
-               perror("ERROR reading from socket");
-               exit(1);
-            }
-            //TENGO QUE VER ESTE TEMA DE LIMPIAR EL BUFFER
-            printf("%s\n",buffer);
-         }
+            
       }
       
 }
@@ -92,7 +76,7 @@ int login(char * buffer, int sockfd){
     buffer[6]='r';
     buffer[7]=' ';
 
-    do{
+  //  do{
                
         int i= strlen(buffer);
         printf("Ingrese numero de legajo:\n");
@@ -119,7 +103,7 @@ int login(char * buffer, int sockfd){
 
        // write(sockfd, buffer, strlen(buffer));
 
-      }while(loginAccepted < 0);
+   //   }while(loginAccepted < 0);
 
       return 1;
    
