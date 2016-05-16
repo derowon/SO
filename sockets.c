@@ -61,12 +61,11 @@ void prepareToConnect(char * address){
       exit(0);
    }
    
-   printf("HOla1\n");
+  	
    bzero((char *) &servaddr, sizeof(servaddr));
    servaddr.sin_family = AF_INET;
    servaddr.sin_addr.s_addr = inet_addr(address);
    servaddr.sin_port = htons(SERV_PORT);
-   printf("HOla2\n");
 }
 /*
 void sendToClient(Package * pack){
@@ -107,7 +106,7 @@ void handleRequest(int conn, Package * pack){
 
 */
 int sendPackage(int con, Package* pack){
-	printf("ACAAAA es el size del struct%d",sizeof(Package));
+
   char* data = calloc(MAX_B,1);
   serialize(pack,data);
  // printf("%d\n %d\n",pack->size,sizeof(data) );
@@ -124,8 +123,6 @@ int sendPackage(int con, Package* pack){
 
 Package * receivePackage(int con,Package* pack){
 	char* data = calloc(MAX_B,1);
-
-	printf("Entre al receivePackage\n");
   	int buffer_size=0;
   	if((buffer_size = read(con,data,MAX_B))<0){
     printf("no se recibio nada\n");

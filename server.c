@@ -52,6 +52,7 @@ int main( int argc, char *argv[] ) {
          //hago la consulta
          pack = respond(pack);
          printf("ACA es el REspond justo antes de mandarselo%s\n",pack->response );
+         serialize(pack,buffer);
          write(fd2, buffer, MAX_B);
          close(fd2);
          printf("SALGO DE LA CONSULTA DE BASE DE DATOS \n");
