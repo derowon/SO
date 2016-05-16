@@ -191,7 +191,7 @@ char * checkUser(int username, char * password){
 	//int legajo = atoi(username);
 	int num;
 	init();
-	tableCreation();
+	//tableCreation();
 
 	printf("$$$$$$$$$$$$COMO USER NAME ME LLEGA:$$$$$$$$$$$$$$$$$$4\n");
 	printf("$$$$$$$$$$$$%d$$$$$$$$$$$$$$$$$$$$$$",username);
@@ -215,7 +215,7 @@ char * checkUser(int username, char * password){
 		if(checkPassword(username, password) == -1){
 			printf("Contrasena incorrecta.\n");
 			close();
-			return "PASSWORD INCORRECTA";
+			return "USUARIO INCORRECTO";
 		}
 	}
 	printf("ESTOY POR SALIR\n");
