@@ -8,7 +8,7 @@ char * getSubjects();
 char * seeCorrelatives(int subjectCode);
 char * getApprovedSubjectsByStudentCode(int studentCode);
 char * getSubjectsByStudentCode(int studentCode);
-int checkUser(int username, char* password);
+char * checkUser(int username, char* password);
 int checkPassword(char* password);
 
 #endif

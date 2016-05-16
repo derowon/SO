@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include "packages.h"
 #include "parser.h"
+#include "sockets.h"
 
 #define TOTAL_COMMANDS 			6
 #define MAX_COMMAND_LENGTH 		50

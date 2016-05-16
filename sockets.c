@@ -4,10 +4,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <arpa/inet.h>
 #include <netdb.h>
+#include <fcntl.h> // for open
+#include <unistd.h> // for close
 #include "packages.h"
+#include "serialize.h"
 
-#define MAX_B 4112
+
+
 #define SERV_PORT 3686 /*port*/
 #define LISTENQ 24 /*maximum number of client connections*/
 
@@ -63,10 +68,10 @@ void prepareToConnect(char * address){
    servaddr.sin_port = htons(SERV_PORT);
    printf("HOla2\n");
 }
-
+/*
 void sendToClient(Package * pack){
 	send(connfd,pack,sizeof(pack),0);
-}
+}*/
 
 void connectToServ(int sock){
 	 if(connect(sock, (struct sockaddr *) &servaddr, sizeof(servaddr))<0) {

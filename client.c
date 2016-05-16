@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <fcntl.h> // for open
+#include <unistd.h> // for close
 #include <netdb.h>
 #include <netinet/in.h>
 
 #include <string.h>
+#include "sockets.h"
+#include "parser.h"
+
+int login(char * buffer, int sockfd);
 
 int main(int argc, char *argv[]) {
    int sockfd, portno, n;
@@ -42,7 +47,7 @@ int main(int argc, char *argv[]) {
    while(1){
 
       if(!isUserLogged){
-         isUserLogged = login(&buffer,sockfd);
+         isUserLogged = login(buffer,sockfd);
 
       }else{
          printf("Escribiendo el comando help, usted puede conocer los comandos disponibles.\n");

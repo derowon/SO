@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+int checkPassword(int legajo, char* password);
 
 int  subscribeSubject(int subjectCode, int studentCode){
 	char *data;
@@ -105,7 +106,7 @@ char * getSubjects(){
 	char *data;
 	char *sql = calloc(1024, sizeof(char));
 	init();
-	tableCreation();
+	//tableCreation();
 	sprintf(sql, "SELECT NOMBRE FROM MATERIA");
 	data = query(sql);
 	close();

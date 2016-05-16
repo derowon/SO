@@ -11,7 +11,15 @@
 #include <string.h>
 #include "packages.h"
 #include "dataBaseConnection.h"
+#include "sockets.h"
+#include "serialize.h"
 
+Package * checkUser_db(Package * data);
+Package * respond(Package * data);
+Package * subjects_db(Package * data);
+Package * subscribeSubject_db(Package * data);
+Package * cancelSubscription_db(Package * data);
+Package * correlatives_db(Package * data);
 
 
 int main( int argc, char *argv[] ) {
@@ -42,8 +50,8 @@ int main( int argc, char *argv[] ) {
          snprintf(name, 50, "/tmp/client%i", pack->studentID);
          fd2 = open(name, O_WRONLY);
          //hago la consulta
-         respond(pack);
-
+         pack = respond(pack);
+         printf("ACA es el REspond justo antes de mandarselo%s\n",pack->response );
          write(fd2, buffer, MAX_B);
          close(fd2);
          printf("SALGO DE LA CONSULTA DE BASE DE DATOS \n");
@@ -102,38 +110,40 @@ int main( int argc, char *argv[] ) {
    }
 }
 
-void respond(Package * data){
+Package * respond(Package * data){
+   
   // printf("\n\nESTOY EN respond:\n");
   // printf("EN RESPOND , A PUNTO DE INGRESAR EN LA FUNCTION %d\n", data->function);
   switch (data->function){
     case SUBJECTS:
     //  printf("\n\n\n@@@@@@@@La funcion que me toca atender en la base de datos es:@@@@@@@@\n");
     //  printf("@@@@@@@@subjects_db@@@@@@@@\n");
-      subjects_db(data);
+      return subjects_db(data);
       break;
 
     case SUBSCRIBE_SUBJECT:
-      subscribeSubject_db(data);
+      return subscribeSubject_db(data);
       break;
 
     case CANCEL_SUBSCRIPTION:
-      cancelSubscription_db(data);
+      return cancelSubscription_db(data);
       break;
 
     case CORRELATIVES:
-      correlatives_db(data);
+      return correlatives_db(data);
       break;
 
     case CHECK_USER:
    //   printf("Estoy por entrar en checkUser_db \n");
-      checkUser_db(data);
+      return checkUser_db(data);
+      
       break;
   }
-  return;
+  return NULL;
 }
 
 
-void subjects_db(Package * data){
+Package * subjects_db(Package * data){
   char* buffer;
  
   buffer = getSubjects();
@@ -144,9 +154,10 @@ void subjects_db(Package * data){
   memcpy(data->response, buffer,strlen(buffer));
 //  printf("\n^^^^^^^^Ahora data->data.response contiene lo siguiente:^^^^^^\n");
 //  printf("\n^^^^^^^^%s^^^^^^\n", data->response);
+  return data;
 }
 
-void subscribeSubject_db(Package * data){
+Package * subscribeSubject_db(Package * data){
   int result;
   char * buffer;
   
@@ -160,9 +171,11 @@ void subscribeSubject_db(Package * data){
     memcpy(data->response, buffer, strlen(buffer));
   }
 
+  return data;
+
 }
 
-void cancelSubscription_db(Package * data){
+Package * cancelSubscription_db(Package * data){
   int result;
   char * buffer;
   
@@ -175,10 +188,11 @@ void cancelSubscription_db(Package * data){
     buffer = "No se pudo realizar el pedido con exito.";
     memcpy(data->response, buffer, strlen(buffer));
   }
+  return data;
 }
 
 
-void correlatives_db(Package * data){
+Package * correlatives_db(Package * data){
   char* buffer;
 
   buffer = seeCorrelatives(data->subID);
@@ -186,10 +200,10 @@ void correlatives_db(Package * data){
   memcpy(data->response, buffer,strlen(buffer));
 
  // printf("ESTO ES LO QUE CONTIENE DATA-> DATA.RESPONSE:---     \n%s\n", data->response);
-
+  return data;
 }
 
-void checkUser_db(Package * data){
+Package * checkUser_db(Package * data){
   char * buffer;
 
  // printf("\nEstoy en checkUser_db\n");
@@ -203,9 +217,12 @@ void checkUser_db(Package * data){
 
   if(strcmp(buffer, "USUARIO INCORRECTO") == 0 || strcmp(buffer, "USUARIO INCORRECTO")==0){
     strcpy(data->response, "-1");
+
   }else{
     strcpy(data->response, "1");
   }
+
+  return data;
 }
 
 
