@@ -213,7 +213,7 @@ int parser(char * buff, int sock){
 		printf("Invalid command.\n");
 	}
 
-	return 0;
+	return -1;
 
 }
 
@@ -388,7 +388,10 @@ int sesion(int user, char *pass){
 //	printf("\n\n\n************LO QUE ALMACENE EN DATA COMO PASS ES: %s**********\n", pack->pass);
 //	printf("ACA estan los datos %d \n %d \n", pack.data.sign.studentID,pack.data.pass );
 //	printf("ESTOY EN SESION Y ESTOY ENVIANDO ESTA PASSWORD EN UN PAQUETE: %s\n", pass);
+
+	printf("HAHAHAHA\n");
 	sendPackage(sockfd, pack);
+	printf("HAHAHAHA2\n");
 	pack = receivePackage(sockfd, pack);
 
 	printf("Recibi datoss!! %s %d %s \n",pack->response,pack->studentID ,pack->pass);

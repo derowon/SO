@@ -9,19 +9,21 @@
 #include "sockets.h"
 #include "parser.h"
 
+#define SALIR 5
+
 int login(char * buffer, int sockfd);
 
 int main(int argc, char *argv[]) {
    int sockfd, portno, n;
    int isUserLogged = 0;
-   
+   int parser_answer;   
    char buffer[256];
    
    if (argc < 3) {
       fprintf(stderr,"usage %s hostname port\n", argv[0]);
       exit(0);
    }
-	
+  
    
    /* Create a socket point */
    sockfd  = initSockets(); 
@@ -30,7 +32,7 @@ int main(int argc, char *argv[]) {
    /* Now connect to the server */
     connectToServ(sockfd);
    
-	
+  
     //TODO 
     //hay que poner el parser aca
    //printf("Please enter the message: ");
@@ -43,21 +45,27 @@ int main(int argc, char *argv[]) {
 
    
    //int i= strlen(buffer);
-   
-   while(1){
+    while(1){
 
       if(!isUserLogged){
          isUserLogged = login(buffer,sockfd);
+         printf("QUE CARAJO ME DEVOLVIO LOGIN??. ESTO : %d \n", isUserLogged);
 
       }else{
-         printf("ESTOY EN LOGGEado\n");
+         printf("Escribiendo el comando help, usted puede conocer los comandos disponibles.\n");
+         fgets(buffer,255,stdin);
 
-         
+          if(parser_answer = parser(buffer, sockfd) == SALIR){
+            isUserLogged = 0;
+          }
 
-            
+        
+            //TENGO QUE VER ESTE TEMA DE LIMPIAR EL BUFFER
+            printf("%s\n",buffer);
+         }
       }
-      
-}
+    
+
    return 0;
 }
 
@@ -66,7 +74,8 @@ int login(char * buffer, int sockfd){
     char * legajo, pass;
     int loginAccepted;
     char c;
-
+    
+    do{
     buffer[0]='i';
     buffer[1]='n';
     buffer[2]='i';
@@ -76,9 +85,9 @@ int login(char * buffer, int sockfd){
     buffer[6]='r';
     buffer[7]=' ';
 
-  //  do{
+    
                
-        int i= strlen(buffer);
+        int i= 8;
         printf("Ingrese numero de legajo:\n");
 
         while((c =getchar()) != '\n'){
@@ -96,14 +105,15 @@ int login(char * buffer, int sockfd){
 
         buffer[i]='\0';
 
-        //printf("%s\n", buffer);
+        printf("DO WHILE STRING BUFFER%s\n", buffer);
 
-        
+          printf("antes de parsear HIJO DE PUTA\n");
          loginAccepted = parser(buffer,sockfd);
+         printf("loginAccepted valeeee: %d \n", loginAccepted);
 
        // write(sockfd, buffer, strlen(buffer));
 
-   //   }while(loginAccepted < 0);
+      }while(loginAccepted < 0);
 
       return 1;
    

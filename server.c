@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <semaphore.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
+#include <sys/mman.h>
+#include <sys/types.h>
 #include <string.h>
 #include "packages.h"
 #include "dataBaseConnection.h"
@@ -31,13 +32,20 @@ int main( int argc, char *argv[] ) {
    int n, pid;
    char *path = "/tmp/baseDeDatos";
    char *fromserver ="/tmp/client";
+   sem_t mutex;
    char name[50];
    mkfifo(path, 0666);
 
-   
+
    /* First call to socket() function */
-   sockfd = initSockets(); 
+   sockfd = initSockets();
    prepareToListen(sockfd);
+   /*Inicializo semaforo*/
+    if( sem_init(&mutex,1,1) < 0)
+    {
+      perror("semaphore initilization");
+      exit(0);
+    }
 
    pid= fork();
    if(pid == 0){
@@ -60,39 +68,41 @@ int main( int argc, char *argv[] ) {
       close(fd);
 
    }else{
- 
+
       while (1) {
    		newsockfd = acceptConnection(sockfd);
          if (newsockfd < 0) {
             perror("ERROR on accept");
             exit(1);
          }
-         
+
          /* Create child process */
          pid = fork();
-   		
+
          if (pid < 0) {
             perror("ERROR on fork");
             exit(1);
          }
-         
+
          if (pid == 0) {
             /* This is the client process */
             close(sockfd);
             while(1){
+               printf("Estoy listo apra \n");
                pack = receivePackage(newsockfd,pack);
                printf("RECIBI el pack\n");
                printf("\n\n\n************LO QUE ALMACENE EN DATA COMO USER ES: %d**********\n", pack->studentID);
                printf("\n\n\n************LO QUE ALMACENE EN DATA COMO PASS ES: %s**********\n", pack->pass);
-               
+
                snprintf(name, 50, "/tmp/client%i", pack->studentID);
                printf("%s\n",name );
                mkfifo(name,0666);
 
                serialize(pack,buffer);
                fd = open(path, O_WRONLY);
+               sem_wait(&mutex);
                write(fd, buffer, MAX_B);
-
+               sem_post(&mutex);
                fd = open(name,O_RDONLY);
                read(fd,buffer,MAX_B);
                pack = derialize(buffer);
@@ -100,19 +110,19 @@ int main( int argc, char *argv[] ) {
                printf("ESTE ES el response %s\n", pack->response);
                sendPackage(newsockfd,pack);
                close(fd);
-               exit(0);
+
             }
          }
          else {
             close(newsockfd);
          }
-   		
+
       } /* end of while */
    }
 }
 
 Package * respond(Package * data){
-   
+
   // printf("\n\nESTOY EN respond:\n");
   // printf("EN RESPOND , A PUNTO DE INGRESAR EN LA FUNCTION %d\n", data->function);
   switch (data->function){
@@ -137,7 +147,7 @@ Package * respond(Package * data){
     case CHECK_USER:
    //   printf("Estoy por entrar en checkUser_db \n");
       return checkUser_db(data);
-      
+
       break;
   }
   return NULL;
@@ -146,7 +156,7 @@ Package * respond(Package * data){
 
 Package * subjects_db(Package * data){
   char* buffer;
- 
+
   buffer = getSubjects();
  // printf("\n\n####Lo que me devolvio la base de datos es: #####\n");
  // printf("####%s #####\n",buffer);
@@ -161,9 +171,9 @@ Package * subjects_db(Package * data){
 Package * subscribeSubject_db(Package * data){
   int result;
   char * buffer;
-  
+
   result = subscribeSubject(data->subID, data->studentID);
-  
+
   if(result == 1){
     buffer = "La inscripcion se realizo con exito.";
     memcpy(data->response, buffer, strlen(buffer));
@@ -179,7 +189,7 @@ Package * subscribeSubject_db(Package * data){
 Package * cancelSubscription_db(Package * data){
   int result;
   char * buffer;
-  
+
   result = cancelSubscription(data->subID, data->studentID);
 
   if(result == 1){
@@ -225,7 +235,3 @@ Package * checkUser_db(Package * data){
 
   return data;
 }
-
-
-
-
