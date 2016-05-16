@@ -30,9 +30,9 @@ typedef union {
 typedef struct{
 	int size;
 	int function;
+	int clientid;
 	dataUnion data;
 } Package;
-
 
 
 #endif

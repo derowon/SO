@@ -14,11 +14,11 @@
 
 void respond(Package * data);
 void materias_db(Package * data);
-void handleRequest (int connfd);
+//void handleRequest (int connfd);
 
 int main (int argc, char **argv)
 {
- int listenfd, connfd, n;
+ /*int listenfd, connfd, n;
  pid_t childpid;
  socklen_t clilen;
  char buf[MAXLINE];
@@ -61,6 +61,24 @@ int main (int argc, char **argv)
  }
  //close socket of the server
  close(connfd);
+
+}*/
+ Package pack;
+ int childpid;
+ iConnect_server();
+ while (1){
+  if(!serverReceivePackage( 1001, &pack)){
+    printf("Request received from client:%d \n", pack.clientid);
+
+    if ( (childpid = fork()) ==0){
+      handleRequest(&pack);
+      printf("Response taken care of\n");
+      exit(0);
+    }
+  
+
+ }
+
 }
 }
 

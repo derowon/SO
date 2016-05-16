@@ -58,7 +58,7 @@ void initCommandList(){
 	commands[3].info = "Permite al usuario ver los comandos disponibles.";	
 **/}
 
-
+/*
 int commandSelector(char* command){
 
 	for(int i=0; i<TOTAL_COMMANDS;i++){
@@ -67,7 +67,7 @@ int commandSelector(char* command){
 		}
 	}
 	return -1;
-}
+}*/
 
 void parser(char * buff, int sock){
 	sockfd=sock;
@@ -78,7 +78,7 @@ void parser(char * buff, int sock){
 	int index, argCount;
 	char flag= 0;
 	char* args [10];
-	printf("%s\n.",buff);
+	//printf("%s\n.",buff);
 	argCount = split2(args, buff);
 
 	if (argCount == -1){
@@ -176,7 +176,7 @@ void split(char* buffer, char* command, char* arguments){
   arguments[j-1] = 0;
 }
 
-int strEquals(char* str1, char* str2){
+/*int strEquals(char* str1, char* str2){
 	if(strlen(str1) != strlen(str2)) {
 		return FALSE;
 	}else{
@@ -188,7 +188,7 @@ int strEquals(char* str1, char* str2){
     }
 
     return TRUE;
-}
+}*/
 
 
 int inscribirseMateria_client(int legacy, int subCode){
@@ -231,29 +231,32 @@ int materias_client(void){
 char* inscribirseMateria(int legacy, int subCode){
 	pack.function = INSCRIBIR_MATERIA;
 	pack.data.sign.subID= subCode;
+	pack.clientid = getpid();
 	pack.data.sign.studentID = legacy;
 	pack.size = sizeof(pack);
-	//clientSendPackage(xd, &pack);
-	//clientReceivePackage(xd, &pack);
+	clientSendPackage(xd, &pack);
+	clientReceivePackage(xd, &pack);
 	//return pack.data.response; 
 	return "hola";
 }
 char* desinscribirseMateria(int legacy, int subCode){
 	pack.function = DESINSCRIBIR_MATERIA;
 	pack.size = sizeof(pack);
+	pack.clientid = getpid();
 	pack.data.sign.studentID = legacy;
 	pack.data.sign.subID = subCode;
-//	clientSendPackage(xd, &pack);
-//	clientReceivePackage(xd, &pack);
+	clientSendPackage(xd, &pack);
+	clientReceivePackage(xd, &pack);
 	//return pack.data.response; 
 	return "hola";
 }
 char* correlatividades(int subCode){
 	pack.function = CORRELATIVAS;
 	pack.size = sizeof(pack);
+	pack.clientid = getpid();
 	pack.data.subC = subCode;
-	//clientSendPackage(xd, &pack);
-	//clientReceivePackage(xd, &pack);
+	clientSendPackage(xd, &pack);
+	clientReceivePackage(xd, &pack);
 	return "hola";//pack.data.response; 
 
 }
@@ -262,6 +265,7 @@ char* correlatividades(int subCode){
 char* materias(void){
 	pack.function = MATERIAS;
 	pack.size= sizeof(pack);
+	pack.clientid= getpid();
 	printf("JEJE");
 	clientSendPackage(sockfd, &pack);
 	clientReceivePackage(sockfd, &pack);
