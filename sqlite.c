@@ -22,6 +22,7 @@ void init(){
     fprintf(stderr,"Opened database successfully\n");
     printf("EL VALOR DE RC ES: %d\n", rc);
   }
+ //tableCreation();
 
 
 }
@@ -30,7 +31,15 @@ void close(){
   sqlite3_close(db);
 }
 
+//Database management
+/* int main(){
 
+  init();
+  
+
+  sqlite3_close(db);
+
+}*/
 
 
 
@@ -38,12 +47,15 @@ void close(){
 static int callback(void *data, int argc, char **argv, char **azColName){
    int i;
    for(i=0; i<argc; i++){
-      
+      //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+      //printf("HOLA CHINITO\n");
+
+      //if(*(char*)data != NULL)
         sprintf(data + strlen(data), "%s\t" , argv[i] ? argv[i] : "NULL");
    }
    
 
-   
+   //if(*(char*)data != NULL)
       sprintf(data + strlen(data), "\n");
 
    return 0;
@@ -100,13 +112,76 @@ void tableCreation(){
 
   /* Create SQL statement */
      sql = "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA) "  \
-           "VALUES (1, 'A', 20,'INFORMATICA'); " \
+           "VALUES (10, 'Sistemas de Representacion', 20,'INFORMATICA'); " \
            "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA) "  \
-           "VALUES (2, 'B', 25,'INFORMATICA'); "     \
+           "VALUES (20, 'Introduccion a la Informatica', 25,'INFORMATICA'); "     \
            "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
-           "VALUES (3, 'C', 23,'QUIMICA');" \
+           "VALUES (30, 'Analisis Matematico I', 23,'INFORMATICA');" \
            "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
-           "VALUES (4, 'D', 25,'INDUSTRIAL');";
+           "VALUES (40, 'Algebra', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (50, 'Metodologia del Aprendizaje', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (60, 'Programacion Imperativa', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (70, 'Analisis Matematico II', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (80, 'Fisica I', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (90, 'Matematica Discreta', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (100, 'Quimica', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (110, 'Diseno y procesamiento de doc XML', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (120, 'Programacion orientada a objetos', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (130, 'Logica Computacional', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (140, 'Fisica', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (150, 'Arquitectura de Computadoras', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (160, 'Estructura de Datos y Algoritmos', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (170, 'Probabilidad y Estadistica', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (180, 'Fisica II', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (190, 'Sistemas Operativos', 25,'INFORMATICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (11, 'Introduccion a la computacion', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (22, 'Matematica I', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (33, 'Algebra Lineal', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (44, 'Programacion I', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (55, 'Matematica II', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (66, 'Matematica III', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (77, 'Algoritmos', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (88, 'Tecnologia de materiales electronicos', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (99, 'Matematica IV', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (111, 'Organizacion Industrial', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (122, 'Electrotenia I', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (133, 'Matematica IV', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (144, 'Teoria de circuitos', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (155, 'Electrotenia III', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (166, 'Laboratorio de Electrotenia', 25,'ELECTRONICA');"\
+           "INSERT INTO MATERIA (CODIGO,NOMBRE,CUPO,CARRERA)" \
+           "VALUES (177, 'Electronica I', 25,'ELECTRONICA');";
+
 
   /* Execute SQL statement */
     query(sql); //3
@@ -126,11 +201,14 @@ void tableCreation(){
    /* Execute SQL statement */      
    query(sql); //4
 
-   /* Create SQL statement */
+ /* Create SQL statement */
    sql = "INSERT INTO ALUMNO (LEGAJO,NOMBRE,SEXO,PASSWORD,CARRERA) "  \
-           "VALUES (1, 'DERO', 'M', '1234', 'INFORMATICA'); "\
+           "VALUES (52000, 'Won, Dae Ro', 'M', 'dwon', 'INFORMATICA'); "\
            "INSERT INTO ALUMNO (LEGAJO,NOMBRE,SEXO,PASSWORD,CARRERA) "  \
-           "VALUES (2, 'NICO', 'M', '1234','INFORMATICA');";
+           "VALUES (5400, 'Guido, Sebastian Ezequiel', 'M', 'sguido','INFORMATICA');"\
+           "INSERT INTO ALUMNO (LEGAJO,NOMBRE,SEXO,PASSWORD,CARRERA) "  \
+           "VALUES (53384, 'Castano, Nicolas Martin', 'M', 'ncastano','INFORMATICA');";
+
 
    /* Execute SQL statement */
     query(sql); //5
@@ -208,15 +286,91 @@ void tableCreation(){
     query(sql); //10
 
 
-    /* Execute SQL statement */
+     /* Execute SQL statement */
     sql = "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE) "  \
-           "VALUES (3,2); "\
+           "VALUES (60,20); "\
            "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
-           "VALUES (2,1);"\
+           "VALUES (60,40);"\
            "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
-           "VALUES (3,1);";
+           "VALUES (140,80);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (120,60);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (120,20);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (120,40);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (150,60);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (150,20);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (150,40);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (150,120);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (160,120);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (160,60);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (160,20);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (160,40);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (190,150);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (190,160);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (190,120);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (190,60);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (190,20);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (190,40);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (44,11);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (44,33);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (55,22);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (66,55);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (66,22);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (77,44);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (77,11);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (77,33);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (88,77);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (88,44);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (88,33);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (88,11);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (99,66);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (99,55);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (99,22);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (133,99);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (133,66);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (133,55);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (133,22);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (155,122);"\
+           "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
+           "VALUES (177,122);";
 
-  
+   // printf("HOLA\n");
     /* Execute SQL statement */
     query(sql); //11
 
