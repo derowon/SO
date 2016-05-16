@@ -84,9 +84,7 @@ Package *  derialize(char* buff){
 	
 	strncpy(pack->response,&buff[i],size);
 	i+=size;
-	if(size>0){
-		printf("DENTRO DEL SERIALIZE %s\n",pack->response );
-	}
+	
 	
 	return pack;
 }

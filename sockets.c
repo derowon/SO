@@ -67,10 +67,7 @@ void prepareToConnect(char * address){
    servaddr.sin_addr.s_addr = inet_addr(address);
    servaddr.sin_port = htons(SERV_PORT);
 }
-/*
-void sendToClient(Package * pack){
-	send(connfd,pack,sizeof(pack),0);
-}*/
+
 
 void connectToServ(int sock){
 	 if(connect(sock, (struct sockaddr *) &servaddr, sizeof(servaddr))<0) {
@@ -82,29 +79,7 @@ void connectToServ(int sock){
 void closeAcceptFD(int sock){
 	close(sock);
 }
-/*
-void handleRequest(int conn, Package * pack){
-	printf("Handle\n");
-	int n1,n2;
 
-	char buffer[256];
-   	bzero(buffer,256);
-	do{
-		
-		n1 = read(conn,buffer,256);
-		printf("%s\n",buffer);
-		if (n1 < 0) {
-    	  perror("ERROR reading from socket");
-     	  exit(1);
-  		}
-   
-   		printf("Here is the message: %s\n",buffer);
-   		n2= write(conn,"I got your message",18);
-
-		}while(n1>0);
-}
-
-*/
 int sendPackage(int con, Package* pack){
 
   char* data = calloc(MAX_B,1);
@@ -128,16 +103,9 @@ Package * receivePackage(int con,Package* pack){
     printf("no se recibio nada\n");
     return NULL;
   }
-  //printf("%d\n",buffer_size );
-  //printf("Este es el dato serializado %s\n " ,data);
+
   pack = derialize(data);
 
-  //printf("Este es el user %d ",pack->studentID);
-
-  //printf("ESTO ES LO QUE CONTIENE DATA DESPUES DE HACER EL MEMCPY: %d  %s\n", pack->user , pack->data.pass);
-
- 
- // printf("toy saliendo del receivePackage\n");
   return pack;
 }
 

@@ -9,7 +9,7 @@
 #include "parser.h"
 #include "sockets.h"
 
-#define TOTAL_COMMANDS 			6
+#define TOTAL_COMMANDS 			7
 #define MAX_COMMAND_LENGTH 		50
 #define MAX_ARGUMENTS_LENGTH 	50
 #define TRUE 					1
@@ -32,7 +32,7 @@ typedef struct commandDescriptor
 commandDescriptor commands[TOTAL_COMMANDS];
 
 Package * pack;
-
+Package p;
 void initCommandList(){
 	commands[0].key = "inscribirse";
 	commands[0].handler = (func)&inscribirseMateria_client;
@@ -40,7 +40,7 @@ void initCommandList(){
 	commands[0].info = "Permite al usuario inscribirse en una materia.";
 	commands[0].enabled = 0;
 
-	commands[1].key = "desinscrbirse";
+	commands[1].key = "desinscribirse";
 	commands[1].handler = (func)&desinscribirseMateria_client;
 	commands[1].argCount = 2; /*legajo y materia*/
 	commands[1].info = "Permite al usuario desinscribirse de una materia.";
@@ -64,51 +64,20 @@ void initCommandList(){
 	commands[4].info = "Permite al usuario ver los comandos disponibles.";
 	commands[4].enabled = 0;
 
-	commands[5].key = "iniciar";
-	commands[5].handler = (func)&iniciarSesion_client;
-	commands[5].argCount = 2;
-	commands[5].info = "Permite al usuario iniciar sesion.";	
-	commands[0].enabled = 1;
+	commands[5].key = "salir";
+	commands[5].handler = (func)&salir;
+	commands[5].argCount = 0;
+	commands[5].info = "Permite al usuario cerrar sesion.";
+	commands[5].enabled = 0;	
+
+	commands[6].key = "iniciar";
+	commands[6].handler = (func)&iniciarSesion_client;
+	commands[6].argCount = 2;
+	commands[6].info = "Permite al usuario iniciar sesion.";	
+	commands[6].enabled = 1;
 
 
 }
-
-/*
-int loggin(char* buff, int sock){
-
-	sockfd=sock;
-	
-	if ( INITIALIZED == 0){
-		INITIALIZED++;
-		initCommandList();
-	}
-
-	int argCount;
-	char* args [10];
-	printf("%s\n.",buff);
-	argCount = split2(args, buff);
-
-
-
-	if (argCount == -1){
-		printf("Error\n");
-		return -1;
-	}
-
-	argCount -=1;
-	printf("\n\n\n*********Lo que estoy parseando es: ******** \n");
-	printf("%s \n",buff);
-	printf("$$$$$$$Los argumentos que le estoy pasando son: $$$$$$\n");
-	printf("%s - %s\n", args[1],args[2]);
-	if (argCount != commands[5].argCount){
-				printf("%i arguments are required and %i were received.\n",commands[5].argCount, argCount);
-				return -1;
-	} else{
-		commands[5].handler(atoi(args[1]),args[2]);
-	}
-
-	return 1;
-}*/
 
 
 int parser(char * buff, int sock){
@@ -123,7 +92,7 @@ int parser(char * buff, int sock){
 	int index, argCount,j;
 	char flag= 0;
 	char* args [10];
-	printf("%s\n.",buff);
+	
 	argCount = split(args, buff);
 
 
@@ -135,15 +104,13 @@ int parser(char * buff, int sock){
 	}
 
 	argCount -=1;
-	printf("\n\n\n*********Lo que estoy parseando es: ******** \n");
-	printf("*********%s ******** \n",buff);
-
+	
 	for (index = 0; !flag && index < TOTAL_COMMANDS; index++){
 		if (!strcmp(args[0],commands[index].key)){
 			flag =1;
 
 			if (argCount != commands[index].argCount){
-				printf("%i arguments are required and %i were received.\n",commands[index].argCount, argCount);
+				printf("%i son los argumentos requeridos, pero tan solo %i argumentos fueron recibidos.\n",commands[index].argCount, argCount);
 			} else {
 
 				//si es iniciar sesion, tengo que habilitar los otros comandos y deshabilitar el enabled de iniciar sesion.
@@ -169,22 +136,20 @@ int parser(char * buff, int sock){
 					}	
 				}
 				
-				printf("%d\n",index);
 				switch (commands[index].argCount){
 					case 0:
-						printf("\n\n*****La funcion a la que estoy entrando es:*****\n");
-						printf("****%s******\n",commands[index].info);
-						commands[index].handler();
+
+						if(!strcmp(args[0],"salir")){
+							return 5;
+						}else{
+							commands[index].handler();	
+						}
 						
 						break;
 					case 1:
-						printf("\n\n*****La funcion a la que estoy entrando es:*****\n");
-						printf("****%s******\n",commands[index].info);
 						commands[index].handler(atoi(args[1]));
 						break;
 					case 2:
-						printf("\n\n*****La funcion a la que estoy entrando es:*****\n");
-						printf("****%s******\n",commands[index].info);
 						//si soy el comando 'inscribirse' o 'desinscribirse', retorno 0
 
 						//caso contrario, soy el comando 'iniciar', en cuyo caso debo retornar algo positivo o negativo
@@ -200,8 +165,6 @@ int parser(char * buff, int sock){
 						
 						break;
 					case 3:
-						printf("\n\n*****La funcion a la que estoy entrando es:*****\n");
-						printf("****%s******\n",commands[index].info);
 						commands[index].handler(atoi(args[1]),atoi(args[2]),atoi(args[3]));
 						break;
 						// etccccc
@@ -210,7 +173,7 @@ int parser(char * buff, int sock){
 		}
 	}
 	if(!flag){
-		printf("Invalid command.\n");
+		printf("Comando invalido.\n");
 	}
 
 	return -1;
@@ -258,12 +221,14 @@ int strEquals(char* str1, char* str2){
 }
 
 
-int help(){
-	for(int i=0; i< TOTAL_COMMANDS; i++){
+int salir(){
+	return 5;
+}
 
-		if(commands[i].enabled == 1){
+int help(){
+	for(int i=0; i< TOTAL_COMMANDS -1 ; i++){
+
 			printf("- %s: %s\n", commands[i].key, commands[i].info);	
-		}
 		
 	}
 
@@ -271,48 +236,49 @@ int help(){
 }
 
 int iniciarSesion_client(int legacy, char *password){
-	printf("\n\nENTRE A iniciarSesion_client\n");
-	int result;
-	printf("Iniciando sesion.\n");
-	printf("EL USUARIO VALE: %d\n", legacy);
-	printf("PASSWORD VALE: %s\n", password);
+	
 	return sesion(legacy,password);
 	
 
 }
 
 int inscribirseMateria_client(int legacy, int subCode){
-	printf("Intentando completar la solicitud.\n");
+	printf("Intentando completar la solicitud...\n");
 	char* result;
 
 	result = inscribirseMateria(legacy, subCode);
 	if (atoi(result) == 1){
 		printf("Inscripcion realizada con exito.\n");
+		return 1;
 	}else{
 		printf("Ocurrio un error durante el proceso de inscripcion.\n");
+		return -1;
 	}
-	return 0;
+	
 }
 
 int desinscribirseMateria_client(int legacy, int subCode){
-	printf("Intentando completar la solicitud.\n");
+	printf("Intentando completar la solicitud...\n");
 	char * result = desinscribirseMateria(legacy, subCode);
 	if (atoi(result) == 1){
 		printf("Se ha eliminado la inscripcion con exito.\n");
+		return 1;
 	}else{
 		printf("Ocurrio un error durante el proceso de desinscripcion.\n");
+		return -1;
+
 	}
-	return 0;
+	
 }
 
 int correlatividades_client(int subCode){
-	printf("Obteniendo materias correlativas.\n");
+	printf("Obteniendo materias correlativas...\n");
 
 
 	char *response = calloc(1024,sizeof(char));
 
 	response = correlatividades(subCode);
-	printf("LO QUE TENGO EN RESPONSE ES:   \n%s\n",response);
+	printf("%s\n",response);
 	
 	return 0;
 }
@@ -332,6 +298,7 @@ char* inscribirseMateria(int legacy, int subCode){
 	pack->subID= subCode;
 	pack->studentID = legacy;
 	pack->size = sizeof(Package);
+
 	sendPackage(sockfd, pack);
 	pack = receivePackage(sockfd, pack);
 	return pack->response; 
@@ -358,48 +325,32 @@ char* correlatividades(int subCode){
 char* materias(void){
 	pack->function = SUBJECTS;
 	pack->size= sizeof(Package);
-	printf("\n\n######Estoy enviando un paquete con el siguiento pedido:############  \n");
-	printf("########En este caso el paquete lo mando con VOID#######\n");
 	sendPackage(sockfd, pack);
 	
 
-	printf("\n\n#####Obtuve la respuesta del servidor!!!!#####\n");
 	pack = receivePackage(sockfd, pack);
 
-	printf("\n\n#####La respuesta es:######\n");
-
-	printf("####CHAN CHAN CHAN: %s######\n",pack->response);
 	return pack->response;
 }
 
 int sesion(int user, char *pass){
 
-	//printf("\n\nINGRESE A SESION\n");
-	//printf("EL USUARIO VALE: %d\n", user);
-//	printf("PASSWORD VALE: %s\n", pass);
-	//pack = (char *)calloc(sizeof(Package),1);
 	pack->function = CHECK_USER;
 	pack->size= sizeof(Package);
 	strcpy(pack->pass,pass);
-	//pack.pass = pass;
+
 	pack->studentID  = user;
 	
-	//printf("\n\n\n************LO QUE ALMACENE EN DATA COMO USER ES: %d**********\n", pack->studentID);
-//	printf("\n\n\n************LO QUE ALMACENE EN DATA COMO PASS ES: %s**********\n", pack->pass);
-//	printf("ACA estan los datos %d \n %d \n", pack.data.sign.studentID,pack.data.pass );
-//	printf("ESTOY EN SESION Y ESTOY ENVIANDO ESTA PASSWORD EN UN PAQUETE: %s\n", pass);
-
-	printf("HAHAHAHA\n");
+	
 	sendPackage(sockfd, pack);
-	printf("HAHAHAHA2\n");
 	pack = receivePackage(sockfd, pack);
-
-	printf("Recibi datoss!! %s %d %s \n",pack->response,pack->studentID ,pack->pass);
 
 	if(atoi(pack->response) == -1){
 		return -1;
 	}else{
+		strcpy(p.pass,pass); 
 		return 1;
+
 	}
-	//return checkUser(user,pass);
+	
 }

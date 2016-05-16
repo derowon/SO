@@ -10,5 +10,6 @@ char * getApprovedSubjectsByStudentCode(int studentCode);
 char * getSubjectsByStudentCode(int studentCode);
 char * checkUser(int username, char* password);
 int checkPassword(char* password);
+void tableCreate();
 
 #endif

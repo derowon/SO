@@ -34,8 +34,7 @@ int main(int argc, char *argv[]) {
    
   
     //TODO 
-    //hay que poner el parser aca
-   //printf("Please enter the message: ");
+
    printf("Conectando con el servidor...\n");
    printf("Bienvenido al Sistema de Gestion Academica (SGA).\n");
    bzero(buffer,256);
@@ -49,7 +48,6 @@ int main(int argc, char *argv[]) {
 
       if(!isUserLogged){
          isUserLogged = login(buffer,sockfd);
-         printf("QUE CARAJO ME DEVOLVIO LOGIN??. ESTO : %d \n", isUserLogged);
 
       }else{
          printf("Escribiendo el comando help, usted puede conocer los comandos disponibles.\n");
@@ -105,13 +103,8 @@ int login(char * buffer, int sockfd){
 
         buffer[i]='\0';
 
-        printf("DO WHILE STRING BUFFER%s\n", buffer);
+        loginAccepted = parser(buffer,sockfd);
 
-          printf("antes de parsear HIJO DE PUTA\n");
-         loginAccepted = parser(buffer,sockfd);
-         printf("loginAccepted valeeee: %d \n", loginAccepted);
-
-       // write(sockfd, buffer, strlen(buffer));
 
       }while(loginAccepted < 0);
 

@@ -22,7 +22,6 @@ void init(){
     fprintf(stderr,"Opened database successfully\n");
     printf("EL VALOR DE RC ES: %d\n", rc);
   }
- //tableCreation();
 
 
 }
@@ -31,15 +30,7 @@ void close(){
   sqlite3_close(db);
 }
 
-//Database management
-/* int main(){
 
-  init();
-  
-
-  sqlite3_close(db);
-
-}*/
 
 
 
@@ -47,15 +38,12 @@ void close(){
 static int callback(void *data, int argc, char **argv, char **azColName){
    int i;
    for(i=0; i<argc; i++){
-      //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-      //printf("HOLA CHINITO\n");
-
-      //if(*(char*)data != NULL)
+      
         sprintf(data + strlen(data), "%s\t" , argv[i] ? argv[i] : "NULL");
    }
    
 
-   //if(*(char*)data != NULL)
+   
       sprintf(data + strlen(data), "\n");
 
    return 0;
@@ -228,7 +216,7 @@ void tableCreation(){
            "INSERT INTO CORRELATIVA (CODMATERIA, CORRELATIVA_DE)"  \
            "VALUES (3,1);";
 
-   // printf("HOLA\n");
+  
     /* Execute SQL statement */
     query(sql); //11
 

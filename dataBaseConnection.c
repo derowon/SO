@@ -5,6 +5,11 @@
 
 int checkPassword(int legajo, char* password);
 
+void tableCreate(){
+	init();
+	tableCreation();
+	close();
+}
 int  subscribeSubject(int subjectCode, int studentCode){
 	char *data;
 	char *sql = calloc(1024,sizeof(char));
@@ -40,6 +45,9 @@ int  subscribeSubject(int subjectCode, int studentCode){
 			if(correlatives == num){
 				sprintf(sql,"INSERT INTO INSCRIPCION(CODIGO, LEGAJO, ANIO) VALUES (%d,%d,SELECT date('now'))" , subjectCode, studentCode );
 				data = query(sql);
+				sprintf(sql, "UPDATE INSCRIPCION SET CUPO = CUPO -1 WHERE CODIGO =  %d", subjectCode);
+				data = query(sql);
+				return 1;
 
 			}else{
 				printf("Usted no curso/aprobo las materias correlativas\n");
@@ -72,9 +80,12 @@ int cancelSubscription(int subjectCode, int studentCode){
 		sprintf(sql, "DELETE FROM INSCRIPCION WHERE CODIGO = %d AND LEGAJO = %d", subjectCode,studentCode);
 		data = query(sql);
 		printf("Usted ha cancelado la subscripcion a la materia de codigo: %d de forma exitosa.", subjectCode);
+		sprintf(sql, "UPDATE INSCRIPCION SET CUPO = CUPO -1 WHERE CODIGO =  %d", subjectCode);
+		data = query(sql);
+		return 1;
 	}
 
-	return 1;
+	//return 1;
 }
 
 char * getSubjectsByCareer(char* careerName){
@@ -106,8 +117,8 @@ char * getSubjects(){
 	char *data;
 	char *sql = calloc(1024, sizeof(char));
 	init();
-	//tableCreation();
-	sprintf(sql, "SELECT NOMBRE FROM MATERIA");
+
+	sprintf(sql, "SELECT CODIGO , NOMBRE FROM MATERIA");
 	data = query(sql);
 	close();
 	return data;
@@ -188,28 +199,18 @@ char * getSubjectsByStudentCode(int studentCode){
 char * checkUser(int username, char * password){
 	char * data;
 	char *sql = calloc(1024,sizeof(char));
-	//int legajo = atoi(username);
+	
 	int num;
 	init();
-	//tableCreation();
-
-	printf("$$$$$$$$$$$$COMO USER NAME ME LLEGA:$$$$$$$$$$$$$$$$$$4\n");
-	printf("$$$$$$$$$$$$%d$$$$$$$$$$$$$$$$$$$$$$",username);
-
-	printf("\n\n\n&&&&&&&&&&COMO PASSWORD ME LLEGA: &&&&&&&&&&&\n");
-	printf("&&&&&&&&&&%s&&&&&&&&&&&\n",password);
-
-	printf("\n\nENTRE ENNNNNNN CHECKUSER\n");
-
+	
 	sprintf(sql, "SELECT COUNT(*) FROM ALUMNO WHERE LEGAJO = %d", username);
 	data = query(sql);
 	num = atoi(data);
 
-	printf("Estoy por ingresar en el if Y NUM VALE: %d", num);
 
 	if(num == 0){
 		printf("Usuario incorrecto.\n");
-		//close();
+
 		return "USUARIO INCORRECTO";
 	}else{
 		if(checkPassword(username, password) == -1){
@@ -218,7 +219,7 @@ char * checkUser(int username, char * password){
 			return "USUARIO INCORRECTO";
 		}
 	}
-	printf("ESTOY POR SALIR\n");
+	
 	close();
 	return "CORRECTO";
 }
@@ -228,8 +229,6 @@ int checkPassword(int legajo, char* password){
 	char *sql = calloc(1024,sizeof(char));
 	int answer;
 
-	//init();
-	//tableCreation();
 
 	sprintf(sql, "SELECT COUNT(*) FROM ALUMNO WHERE LEGAJO = %d AND PASSWORD = '%s'",legajo,password);
 	data = query(sql);
@@ -239,7 +238,6 @@ int checkPassword(int legajo, char* password){
 	if(answer == 0)
 		return -1;
 
-	//close();
-
+	
 	return 1;
 }

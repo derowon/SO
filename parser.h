@@ -12,6 +12,7 @@ int desinscribirseMateria_client(int legacy, int subCode);
 int correlatividades_client(int subCode);
 int materias_client(void);
 int help(void);
+int salir(void);
 int iniciarSesion_client(int legacy, char *password);
 
 char* inscribirseMateria(int legacy, int subCode);
