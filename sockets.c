@@ -7,6 +7,7 @@
 #include <netdb.h>
 #include "packages.h"
 
+#define MAX_B 4112
 #define SERV_PORT 3686 /*port*/
 #define LISTENQ 24 /*maximum number of client connections*/
 
@@ -77,7 +78,7 @@ void connectToServ(int sock){
 void closeAcceptFD(int sock){
 	close(sock);
 }
-
+/*
 void handleRequest(int conn, Package * pack){
 	printf("Handle\n");
 	int n1,n2;
@@ -85,9 +86,7 @@ void handleRequest(int conn, Package * pack){
 	char buffer[256];
    	bzero(buffer,256);
 	do{
-		//printf("Tamanio del pack %d\n",sizeof(Package) );
-		//n = read(conn,&pack,sizeof(Package));
-		//printf("Este es el size de lo leido %d \n %s", n ,pack->data.response);
+		
 		n1 = read(conn,buffer,256);
 		printf("%s\n",buffer);
 		if (n1 < 0) {
@@ -99,7 +98,44 @@ void handleRequest(int conn, Package * pack){
    		n2= write(conn,"I got your message",18);
 
 		}while(n1>0);
-
-
-
 }
+
+*/
+int sendPackage(int con, Package* pack){
+	printf("ACAAAA es el size del struct%d",sizeof(Package));
+  char* data = calloc(MAX_B,1);
+  serialize(pack,data);
+ // printf("%d\n %d\n",pack->size,sizeof(data) );
+ // memcpy(data,pack, pack->size);
+ // printf("Este es el pass %d \n Este es el id %s\n",pack->studentID, pack->pass);//pack.data.pass
+
+  if ((write(con, data, pack->size))<0){
+    return -1;
+  }
+
+  free(data);
+  return 0;
+}
+
+Package * receivePackage(int con,Package* pack){
+	char* data = calloc(MAX_B,1);
+
+	printf("Entre al receivePackage\n");
+  	int buffer_size=0;
+  	if((buffer_size = read(con,data,MAX_B))<0){
+    printf("no se recibio nada\n");
+    return NULL;
+  }
+  //printf("%d\n",buffer_size );
+  //printf("Este es el dato serializado %s\n " ,data);
+  pack = derialize(data);
+
+  //printf("Este es el user %d ",pack->studentID);
+
+  //printf("ESTO ES LO QUE CONTIENE DATA DESPUES DE HACER EL MEMCPY: %d  %s\n", pack->user , pack->data.pass);
+
+ 
+ // printf("toy saliendo del receivePackage\n");
+  return pack;
+}
+
