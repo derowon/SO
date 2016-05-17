@@ -3,8 +3,7 @@
 
 #define MAX_STR_SIZE 	4096
 #define MAX_COR			8
-
-typedef enum { MATERIAS, CORRELATIVAS, INSCRIBIR_MATERIA, DESINSCRIBIR_MATERIA} functions;
+typedef enum { MATERIAS, CORRELATIVAS, INSCRIBIR_MATERIA, DESINSCRIBIR_MATERIA,CHECK_USER} functions;
 
 typedef struct {
 	int conn;
@@ -20,7 +19,7 @@ typedef struct{
 	int subID;
 }signUpStruct;
 
-typedef union {
+typedef struct {
 	char response[4096];
 	addCorStruct cor;
 	signUpStruct sign;
@@ -29,6 +28,7 @@ typedef union {
 
 typedef struct{
 	int size;
+	char pass[256];
 	int function;
 	int clientid;
 	dataUnion data;

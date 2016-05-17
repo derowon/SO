@@ -8,7 +8,9 @@ int iConnect_client(void );
 int iConnect_server(void);
 // void handleRequest(int connfd);
 int serverReceivePackage(int sender, Package* pack);
-void handleRequest(Package * data);
+void handleRequest(int address, Package * pack);
 
 
+void respond(Package * data);
+void materias_db(Package * data);
 #endif
