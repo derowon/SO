@@ -76,7 +76,7 @@ void initCommandList(){
 
 
 int parser(char * buff, int sock){
-	
+
 	sockfd=sock;
 	if ( INITIALIZED == 0){
 		INITIALIZED++;
@@ -92,7 +92,7 @@ int parser(char * buff, int sock){
 		printf("Error3\n");
 	}
 
-	
+
 
 	argCount -=1;
 	for (index = 0; !flag && index < TOTAL_COMMANDS; index++){
@@ -109,19 +109,19 @@ int parser(char * buff, int sock){
 						if(!strcmp(args[0],"salir")){
 							return 5;
 						}else{
-							commands[index].handler();	
+							commands[index].handler();
 						}
-						
+
 						break;
 					case 1:
 						commands[index].handler(atoi(args[1]));
 						break;
 					case 2:
 						//commands[index].handler(atoi(args[1]),atoi(args[2]));
-						
+
 						if(!strcmp(args[0],"inscribirse") || !strcmp(args[0],"desinscribirse")){
 							commands[index].handler(atoi(args[1]),atoi(args[2]));
-							return 0;	
+							return 0;
 						}else{
 
 							return (commands[index].handler(atoi(args[1]),args[2]));
@@ -131,7 +131,7 @@ int parser(char * buff, int sock){
 					case 3:
 						commands[index].handler(atoi(args[1]),atoi(args[2]),atoi(args[3]));
 						break;
-						
+
 				}
 			}
 		}
@@ -178,17 +178,17 @@ int salir(){
 int help(){
 	for(int i=0; i< TOTAL_COMMANDS -1 ; i++){
 
-			printf("- %s: %s\n", commands[i].key, commands[i].info);	
-		
+			printf("- %s: %s\n", commands[i].key, commands[i].info);
+
 	}
 
-	return 0;	
+	return 0;
 }
 
 int iniciarSesion_client(int legacy, char *password){
-	
+
 	return sesion(legacy,password);
-	
+
 
 }
 
@@ -218,7 +218,7 @@ int correlatividades_client(int subCode){
 	printf("Obteniendo marterias correlativas.\n");
 	char* response =correlatividades(subCode);
 	printf("%s\n",response);
-	
+
 	return 0;
 }
 
@@ -236,10 +236,10 @@ char* inscribirseMateria(int legacy, int subCode){
 	pack.clientid = getpid();
 	pack.data.sign.studentID = legacy;
 	pack.size = sizeof(pack);
-	clientSendPackage(sockfd, &pack);
-	clientReceivePackage(sockfd, &pack);
-	return pack.data.response; 
-	
+	sendPackage(sockfd, &pack);
+	receivePackage(sockfd, &pack);
+	return pack.data.response;
+
 }
 char* desinscribirseMateria(int legacy, int subCode){
 	pack.function = DESINSCRIBIR_MATERIA;
@@ -247,19 +247,19 @@ char* desinscribirseMateria(int legacy, int subCode){
 	pack.clientid = getpid();
 	pack.data.sign.studentID = legacy;
 	pack.data.sign.subID = subCode;
-	clientSendPackage(sockfd, &pack);
-	clientReceivePackage(sockfd, &pack);
-	return pack.data.response; 
-	
+	sendPackage(sockfd, &pack);
+	receivePackage(sockfd, &pack);
+	return pack.data.response;
+
 }
 char* correlatividades(int subCode){
 	pack.function = CORRELATIVAS;
 	pack.size = sizeof(pack);
 	pack.clientid = getpid();
 	pack.data.subC = subCode;
-	clientSendPackage(sockfd, &pack);
-	clientReceivePackage(sockfd, &pack);
-	return pack.data.response; 
+	sendPackage(sockfd, &pack);
+	receivePackage(sockfd, &pack);
+	return pack.data.response;
 
 }
 
@@ -268,8 +268,8 @@ char* materias(void){
 	pack.function = MATERIAS;
 	pack.size= sizeof(pack);
 	pack.clientid= getpid();
-	clientSendPackage(sockfd, &pack);
-	clientReceivePackage(sockfd, &pack);
+	sendPackage(sockfd, &pack);
+	receivePackage(sockfd, &pack);
 	return pack.data.response;
 }
 
@@ -281,10 +281,10 @@ int sesion(int user, char *pass){
 	strcpy(pack.pass,pass);
 
 	pack.data.sign.studentID  = user;
-	
-	
-	clientSendPackage(sockfd, &pack);
-	clientReceivePackage(sockfd, &pack);
+	printf("MANDEEE \n" );
+
+	sendPackage(sockfd, &pack);
+	receivePackage(sockfd, &pack);
 
 	if(atoi(pack.data.response) == -1){
 		return -1;
@@ -293,7 +293,7 @@ int sesion(int user, char *pass){
 		return 1;
 
 	}
-	
+
 }
 
 void clear(){
