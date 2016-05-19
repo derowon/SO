@@ -7,6 +7,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "packages.h"
 #include "parser.h"
 #include "comm.h"
@@ -21,76 +23,57 @@ socklen_t clilen;
 int listennn;
 
 int clientSendPackage(int con, Package* pack){
-  void* data = calloc(pack->size,1);
-  memcpy(data,pack, pack->size);
-  
- 
-  if (send(con, data,sizeof(Package),0)<0){
+	return sendPackage(con,pack);
+}
+
+int clientReceivePackage(int con,Package *pack){
+	return receivePackage(con,pack);
+}
+
+int serverReceivePackage(int con, Package * pack){
+	return receivePackage(con, pack);
+}
+
+int serverSendPackage(int con, Package *pack){
+	return sendPackage(con,pack);
+}
+
+int sendPackage(int con, Package* pack){
+	int buffer_size;
+  void* data = calloc(sizeof(Package),1);
+  memcpy(data,pack, sizeof(Package));
+  if( (buffer_size = send(con, data,sizeof(Package),0))<0){
     printf("error %s",strerror(errno));
     return -1;
   }
-  
-  
-
   free(data);
   return 0;
 }
 
-void clientReceivePackage(int con,Package* pack){
+int receivePackage(int con,Package* pack){
   void * data = calloc(sizeof(Package),1); //change for maxsize constant
   int buffer_size=0;
   if ((buffer_size = recv(con, data, sizeof(Package),0))<0){
     printf("no se recibio nada\n");
-    return;
+    return -1;
   }
   printf("Read from socket\n");
-  
-  memcpy(pack,data,buffer_size);
+  memcpy(pack,data,sizeof(Package));
   free(data);
-
-  return;
+  return buffer_size;
 }
 
-int serverReceivePackage(int listenfd, Package* pack){
-  //Package data;
-  int aux=0, n=0;
-  aux = accept(listenfd, (struct sockaddr *) &cliaddr,&clilen);
 
-
-  return aux;
+int acceptConnection(int fd){
+	printf("Waiting for connection\n");
+	int newconn = accept(fd,(struct sockaddr *) &cliaddr,&clilen);
+	if(newconn == -1){
+		printf("Error conexion ! SOckets");
+	}else{
+		return newconn;
+	}
 }
 
-void handleRequest(int address, Package * pack){
-  close(listennn);
-  Package data;
-  int n= 0;
-  // char * resp = "CAMPEON";
- 
-  //respond(&data);
-
-  while ( (n = recv(address, pack, sizeof(Package),0)) > 0)  {
-    printf("*-----------%d--------*",pack->data.subC);
-     printf("ACA ESTA EL PASS %s\n", pack->pass );
-  //  memcpy(pack->data.response, resp, strlen(resp));
-    //memset(&data,0,sizeof(Package));
-    memset(pack->data.response ,0, 4096);
-    
-    answer(pack);
-    printf("RESPUESTA ES \n --%s-- \n", pack->data.response);
-  
-    //printf("%s\n",data.data.response);
-
-    //respond(&data);
-    
-   
-    send(address, pack, sizeof(Package), 0);
-
-  }
-  ;
-  if (n < 0)
-  // printf("%s\n", "Read error");
-  exit(0);
-}
 
 int iConnect_client(){
   struct sockaddr_in servaddr;
@@ -131,8 +114,6 @@ int iConnect_server(){
  int listenfd, connfd, n;
  pid_t childpid;
  char buf[MAXLINE];
-
-
  //Create a socket for the socletf
  //If sockfd<0 there was an error in the creation of the socket
  if ((listenfd = socket (AF_INET, SOCK_STREAM, 0)) <0) {
@@ -153,4 +134,9 @@ int iConnect_server(){
 
  listennn = listenfd;
  return listenfd;
+}
+
+
+void sendToClient(int newconn,Package * pack){
+	sendPackage(newconn,pack);
 }

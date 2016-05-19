@@ -2,13 +2,13 @@
 #define _COMM_H
 
 
-int clientSendPackage(int con, Package* pack);
-void clientReceivePackage(int con, Package* pack);
+int sendPackage(int con, Package* pack);
+int receivePackage(int con, Package* pack);
 int iConnect_client(void );
 int iConnect_server(void);
-// void handleRequest(int connfd);
+int acceptConnection(int fd);
 int serverReceivePackage(int sender, Package* pack);
-void handleRequest(int address, Package * pack);
+void handleRequest(int newconn,int server, Package * pack,char*name);
 
 
 void respond(Package * data);

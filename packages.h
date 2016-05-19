@@ -3,6 +3,7 @@
 
 #define MAX_STR_SIZE 	4096
 #define MAX_COR			8
+#define MAX_B  4368
 typedef enum { MATERIAS, CORRELATIVAS, INSCRIBIR_MATERIA, DESINSCRIBIR_MATERIA,CHECK_USER} functions;
 
 typedef struct {

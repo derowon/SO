@@ -69,7 +69,7 @@ main(int argc, char **argv)
 
 
 
-   
+
    //int i= strlen(buffer);
     while(1){
 
@@ -78,22 +78,22 @@ main(int argc, char **argv)
          isUserLogged = login(sendline,sockfd);
 
       }else{
-         
+
          printf("SGA $>:");
          fgets(sendline,MAXLINE,stdin);
 
-          if(parser_answer = parser(sendline, sockfd) == EXIT){
+          if((parser_answer = parser(sendline, sockfd)) == EXIT){
             isUserLogged = 0;
           }
 
-        
+
             //TENGO QUE VER ESTE TEMA DE LIMPIAR EL BUFFER
             //printf("%s\n",sendline);
          }
-      }
+    }
 
   //parser(sendline, aux);
-  
+
   /*
   send(sockfd, sendline, strlen(sendline), 0);
 
@@ -119,7 +119,7 @@ int login(char * buffer, int sockfd){
     char * legajo, pass;
     int loginAccepted;
     char c;
-    
+
     do{
     buffer[0]='i';
     buffer[1]='n';
@@ -130,15 +130,15 @@ int login(char * buffer, int sockfd){
     buffer[6]='r';
     buffer[7]=' ';
 
-    
-               
+
+
         int i= 8;
         printf("Bienvenido al Sistema de Gestion Academica (SGA).\n");
         printf("Ingrese numero de legajo:\n");
 
         while((c =getchar()) != '\n'){
           buffer[i++] = c;
- 
+
         }
 
         buffer[i]= ' ';
@@ -146,7 +146,7 @@ int login(char * buffer, int sockfd){
         ++i;
 
         while((c =getchar()) != '\n'){
-          buffer[i++] = c;    
+          buffer[i++] = c;
         }
 
         buffer[i]='\0';
@@ -157,11 +157,5 @@ int login(char * buffer, int sockfd){
       }while(loginAccepted < 0);
 
       return 1;
-   
+
 }
-
-
-
-
-
-
