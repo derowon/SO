@@ -2,8 +2,9 @@
 #define _COMM_H
 
 
-int sendPackage(int con, Package* pack);
-int receivePackage(int con, Package* pack);
+int clientSendPackage(int con, Package* pack);
+int clientReceivePackage(int con, Package* pack);
+void sendToClient(int newconn, Package * pack);
 int iConnect_client(void );
 int iConnect_server(void);
 int acceptConnection(int fd);

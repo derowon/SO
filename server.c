@@ -161,7 +161,7 @@ int main (int argc, char **argv)
 						 //WHILE del server que se queda escuchando a los clientes
             while(1){
 							printf("Ready to listen!\n" );
-              receivePackage(newconn,&pack);
+              serverReceivePackage(newconn,&pack);
                if(&pack == NULL){
 								 printf("SALIR PORQUE PACK ERA NULL\n" );
                   exit(0);

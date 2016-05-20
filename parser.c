@@ -237,8 +237,8 @@ char* inscribirseMateria(int legacy, int subCode){
 	pack.clientid = getpid();
 	pack.data.sign.studentID = legacy;
 	pack.size = sizeof(pack);
-	sendPackage(sockfd, &pack);
-	receivePackage(sockfd, &pack);
+	clientSendPackage(sockfd, &pack);
+	clientReceivePackage(sockfd, &pack);
 	return pack.data.response;
 
 }
@@ -248,8 +248,8 @@ char* desinscribirseMateria(int legacy, int subCode){
 	pack.clientid = getpid();
 	pack.data.sign.studentID = legacy;
 	pack.data.sign.subID = subCode;
-	sendPackage(sockfd, &pack);
-	receivePackage(sockfd, &pack);
+	clientSendPackage(sockfd, &pack);
+	clientReceivePackage(sockfd, &pack);
 	return pack.data.response;
 
 }
@@ -258,8 +258,8 @@ char* correlatividades(int subCode){
 	pack.size = sizeof(pack);
 	pack.clientid = getpid();
 	pack.data.subC = subCode;
-	sendPackage(sockfd, &pack);
-	receivePackage(sockfd, &pack);
+	clientSendPackage(sockfd, &pack);
+	clientReceivePackage(sockfd, &pack);
 	return pack.data.response;
 
 }
@@ -269,9 +269,9 @@ char* materias(void){
 	pack.function = MATERIAS;
 	pack.size= sizeof(pack);
 	pack.clientid= getpid();
-	sendPackage(sockfd, &pack);
+	clientSendPackage(sockfd, &pack);
 	//printf("VAMOS A PROBAR CUANTOS VECES PIDE AL SERVIDOR\n");
-	receivePackage(sockfd, &pack);
+	clientReceivePackage(sockfd, &pack);
 	return pack.data.response;
 }
 
@@ -284,8 +284,8 @@ int sesion(int user, char *pass){
 
 	pack.data.sign.studentID  = user;
 
-	sendPackage(sockfd, &pack);
-	receivePackage(sockfd, &pack);
+	clientSendPackage(sockfd, &pack);
+	clientReceivePackage(sockfd, &pack);
 
 	if(atoi(pack.data.response) == -1){
 		return -1;

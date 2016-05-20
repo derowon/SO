@@ -58,7 +58,7 @@ int receivePackage(int con,Package* pack){
     return -1;
   }
   printf("Read from socket\n");
-  memcpy(pack,data,sizeof(Package));
+  memcpy(pack,data,buffer_size);
   free(data);
   return buffer_size;
 }
