@@ -23,8 +23,7 @@ static int COUNT = 0;
 char static clientFile[128];
 int write2=-1, read2=-1;
 int writeaux= 0;
-
-
+Package paq;
 int iConnect_server(void){
 	printf("Server fifo created\n");
 	mknod(SFIFO, S_IFIFO | 0666, 0);
@@ -50,6 +49,20 @@ int iConnect_client(){
 	return 0;
 }
 
+
+int acceptConnection(int fd){
+	printf("Awaiting message\n");
+	read2 = open(SFIFO, O_RDONLY);
+	while (!read(read2, &paq, sizeof(int)));
+	printf("After read while\n");
+	int size = * ((int*)(&paq));
+	read(read2, ((char*)(&paq)) + sizeof(int), size- sizeof(int) );
+	printf("Request coming from pack-> %d with function %d \n", paq.clientid, paq.function);
+	printf("legajo :  %d   Pass :  %s\n", paq.data.sign.studentID, paq.pass);
+	close(read2);
+	return 0;
+}
+
 int clientSendPackage(int con, Package* pack){
 	
 	void* data = calloc(pack->size,1);
@@ -65,13 +78,15 @@ int clientSendPackage(int con, Package* pack){
 	}else{
 		printf("Data sent correctly\n");
 	}
-	writeaux= open(clientFile,O_RDONLY);
+	//writeaux= open(clientFile,O_RDONLY);
+	printf("DESPUES DEL OPEN\n");
 	free(data);
 
 	return 0;
 }
 
-void clientReceivePackage(int con, Package* pack){
+
+int clientReceivePackage(int con, Package* pack){
 	printf("Awaiting to read response\n");
 	//sprintf(clientFile,"/tmp/cf%d \n",getpid());
 	printf("Attempting to open fd %s\n", clientFile);
@@ -85,22 +100,33 @@ void clientReceivePackage(int con, Package* pack){
 	printf("The response is %s \n",pack->data.response);
 	//close(read2);
 
+	return 0;
+}
 
+void sendToClient(int newconn,Package * pack){
+	write2= open(clientFile, O_WRONLY);
+	int count=0;
+	
+	count =write(open(clientFile,O_WRONLY), pack, *(int*)pack);
+	memset(pack,0,sizeof(Package));
+	close(write2);
 }
 
 int serverReceivePackage(int sender, Package* pack){
-	printf("Awaiting message\n");
+	/*printf("Awaiting message\n");
 	read2 = open(SFIFO, O_RDONLY);
 	while (!read(read2, pack, sizeof(int)));
 	printf("After read while\n");
 	int size = * ((int*)pack);
-	read(read2, ((char*)pack) + sizeof(int), size- sizeof(int) );
-	printf("Request coming from pack-> %d with function %d \n", pack->clientid, pack->function);
+	read(read2, ((char*)pack) + sizeof(int), size- sizeof(int) );*/
+	sprintf(clientFile, "/tmp/cf%d", pack->clientid);
+	printf("Request coming from pack-> %d with function %d \n", paq.clientid, paq.function);
+	printf("legajo :  %d   Pass :  %s\n", paq.data.sign.studentID, paq.pass);
 	close(read2);
 	return 0;
 }
 
-void handleRequest (int address,Package * pack){
+/*void handleRequest (int address,Package * pack){
 	printf(" Handling request\n");
 
 
@@ -116,10 +142,10 @@ void handleRequest (int address,Package * pack){
 	
 	count =write(open(clientFile,O_WRONLY), pack, *(int*)pack);
 	memset(pack,0,sizeof(Package));
-
+	close(write2);
 	//printf("%d bytes written, %d should have been \n", count, sizeof(Package));
 	//close(write2);
 	return;
-}
+}*/
 
 

@@ -22,6 +22,8 @@
 #define SERV_PORT 4004 /*port*/
 #define LISTENQ 24 /*maximum number of client connections*/
 
+#define DEBUG 1
+
 #define SERVER_QUEUE_NAME   "/serverQueue"
 #define QUEUE_PERMISSIONS 0660
 #define MAX_MESSAGES 10
@@ -77,14 +79,14 @@ int main (int argc, char **argv)
 
           // send reply message to client
           if ((qd_client = mq_open (in_buffer, O_WRONLY)) == 1) {
-              perror ("Server: Not able to open client queue");
+              perror ("Server: iNot able to open client queue");
               continue;
           }
 
           sprintf (out_buffer, "%ld", token_number);
 
           if (mq_send (qd_client, out_buffer, strlen (out_buffer), 0) == -1) {
-              perror ("Server: Not able to send message to client");
+              perror ("Server: kNot able to send message to client");
               continue;
           }
           //printf ("Server: response sent to client.\n");
@@ -129,6 +131,9 @@ int main (int argc, char **argv)
             exit(1);
           }
           if (pid == 0) {
+            if(DEBUG){
+               printf("DEPSUES DE ACCEPT\n"); 
+            }
             /* This is the client process */
 						close(connfd);
             //AGREGADOO PARA MESSAGE QUEUE
@@ -138,6 +143,9 @@ int main (int argc, char **argv)
             attr.mq_maxmsg = MAX_MESSAGES;
             attr.mq_msgsize = MAX_MSG_SIZE;
             attr.mq_curmsgs = 0;
+            if(DEBUG){
+               printf("DEPSUES DE ACCEPT2\n"); 
+            }
             if ((qd_client = mq_open (client_queue_name, O_RDONLY | O_CREAT, QUEUE_PERMISSIONS, &attr)) == -1) {
               perror ("Client: mq_open (client)");
               exit (1);
@@ -146,22 +154,35 @@ int main (int argc, char **argv)
               perror ("Client: mq_open (server)");
               exit (1);
             }
+            if(DEBUG){
+               printf("DEPSUES DE ACCEPT3\n"); 
+            }
               // send message to server
             if (mq_send (qd_server, client_queue_name, strlen (client_queue_name), 0) == -1) {
               perror ("Client: Not able to send message to server");
               continue;
             }
+            if(DEBUG){
+               printf("DEPSUES DE ACCEPT4\n"); 
+            }
             // receive response from server
-            if (mq_receive (qd_client, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+            /*if (mq_receive (qd_client, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
              perror ("Client: mq_receive");
              exit (1);
+            }*/
+            if(DEBUG){
+               printf("DEPSUES DE ACCEPT5\n"); 
             }
              //termina lo de queue del cliente
 
 						 //WHILE del server que se queda escuchando a los clientes
+            if(DEBUG){
+              printf("ANTES DEL WHILE\n");
+            }
+            
             while(1){
-							printf("Ready to listen!\n" );
-              serverReceivePackage(newconn,&pack);
+              printf("Ready to listen!\n" );
+              //serverReceivePackage(newconn,&pack);
                if(&pack == NULL){
 								 printf("SALIR PORQUE PACK ERA NULL\n" );
                   exit(0);
@@ -173,17 +194,36 @@ int main (int argc, char **argv)
                  printf("Error en el fd del proceso del cliente\n");
                }
 
+              if( DEBUG ){
+                printf("Antes de los memcpy\n");
+              }
               memcpy(buffer,&pack,sizeof(Package));
               sem_wait(&mutex);
+              if(DEBUG){
+               printf("mutex1\n"); 
+              }
              	write(fd,buffer,sizeof(Package));
+              if(DEBUG){
+               printf("mutex2\n"); 
+              }
               sem_post(&mutex);
-             	fd2 = open(name,O_RDONLY);
+              if(DEBUG){
+               printf("Despues del mutex\n"); 
+              }
+              fd2 = open(name,O_RDONLY);
              	read(fd2,buffer,sizeof(Package));
              	memcpy(&pack,buffer,sizeof(Package));
+              if(DEBUG){
+               printf("Antes de enviar al cliente\n");
+               printf("Enviando %s \n", pack.data.response);
+              }
               sendToClient(newconn,&pack);
+              if(DEBUG){
+               printf("Despues de enviar\n"); 
+              }
 
-               close(fd);
-               close(fd2);
+              close(fd);
+              close(fd2);
 
             }
          }else{
