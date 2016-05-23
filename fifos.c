@@ -112,9 +112,9 @@ int clientReceivePackage(int con, Package* pack){
 	printf("After reading ***%d***\n",aux);
 	int size= sizeof(Package);
 	
-	printf("READ *************%d************",read(writeaux, ((char*)pack) + sizeof(int), size-sizeof(int)));
+	read(writeaux, ((char*)pack) + sizeof(int), size-sizeof(int));
 	
-	printf("The response is %s \n",pack->data.response);
+	//printf("The response is %s \n",pack->data.response);
 	sleep(3);
 	//close(read2);
 
@@ -134,7 +134,7 @@ void sendToClient(int newconn,Package * pack){
 	printf("after write se escribieron *************%d**********\n", count);
 	sleep(5);
 	memset(&paq,0,sizeof(Package));
-	//close(write2);
+	close(write2);
 }
 
 int serverReceivePackage(int sender, Package* pack){
@@ -145,9 +145,16 @@ int serverReceivePackage(int sender, Package* pack){
 	int size = * ((int*)pack);
 	read(read2, ((char*)pack) + sizeof(int), size- sizeof(int) );*/
 	memcpy(pack, &paq, sizeof(Package));
+	
+	if (paq.clientid == 0){
+		printf("\n\n\nlooping request    --->>> exiting\n\n\n");
+		
+		_Exit(1);
+	}
 	sprintf(clientFile, "/tmp/cf%d", paq.clientid);
 	printf("*****************************************************************\n");
 	printf("Received package from client and fileName is : %s \n", clientFile);
+	
 	sleep(0.1);
 	printf("Request coming from pack-> %d with function %d \n", paq.clientid, paq.function);
 	printf("legajo :  %d   Pass :  %s\n", paq.data.sign.studentID, paq.pass);

@@ -90,6 +90,7 @@ main(int argc, char **argv)
             //TENGO QUE VER ESTE TEMA DE LIMPIAR EL BUFFER
             //printf("%s\n",sendline);
          }
+         fflush(stdin);
     }
 
   //parser(sendline, aux);

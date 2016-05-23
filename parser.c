@@ -77,6 +77,8 @@ void initCommandList(){
 
 int parser(char * buff, int sock){
 
+	printf("\n\n PARSER ENTRADA\n\n");
+
 	sockfd=sock;
 	if ( INITIALIZED == 0){
 		INITIALIZED++;
@@ -104,19 +106,25 @@ int parser(char * buff, int sock){
 				printf("%d\n",index);
 				switch (commands[index].argCount){
 					case 0:
-						commands[index].handler();
-
+						printf("\n\n ENTRADA CON CASE 0\n\n");
+						//commands[index].handler();
+						printf("\n\n\nEl strcmp da %d y !eso da %d\n\n\n",strcmp(args[0],"salir"),!strcmp(args[0],"salir"));
 						if(!strcmp(args[0],"salir")){
 							return 5;
 						}else{
+							printf("\n\n ENTRADA CON CASE 0 pero por 2da vez\n\n");
 							commands[index].handler();
 						}
 
 						break;
 					case 1:
+						printf("\n\n ENTRADA CON CASE 1\n\n");
+
 						commands[index].handler(atoi(args[1]));
 						break;
 					case 2:
+						printf("\n\n ENTRADA CON CASE 2\n\n");
+
 						//commands[index].handler(atoi(args[1]),atoi(args[2]));
 
 						if(!strcmp(args[0],"inscribirse") || !strcmp(args[0],"desinscribirse")){
@@ -129,6 +137,8 @@ int parser(char * buff, int sock){
 
 						break;
 					case 3:
+						printf("\n\n ENTRADA CON CASE 3\n\n");
+
 						commands[index].handler(atoi(args[1]),atoi(args[2]),atoi(args[3]));
 						break;
 
@@ -176,6 +186,8 @@ int salir(){
 }
 
 int help(){
+	printf("\n\n ENTRADA A HELP\n\n");
+
 	for(int i=0; i< TOTAL_COMMANDS -1 ; i++){
 
 			printf("- %s: %s\n", commands[i].key, commands[i].info);
@@ -223,6 +235,8 @@ int correlatividades_client(int subCode){
 }
 
 int materias_client(void){
+	printf("\n\n ENTRADA MATERIAS\n\n");
+
 	printf("Obteniendo listado de materias");
 	char*response= materias();
 	printf("La respuesta es: \n********************************%s ****************************\n", response );
