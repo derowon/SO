@@ -94,7 +94,6 @@ int parser(char * buff, int sock){
 	int index, argCount;
 	char flag= 0;
 	char* args [10];
-	//printf("%s\n.",buff);
 	argCount = split2(args, buff);
 
 	if (argCount == -1){
@@ -110,11 +109,10 @@ int parser(char * buff, int sock){
 			if (argCount != commands[index].argCount){
 				printf("%i arguments are required and %i were received.\n",commands[index].argCount, argCount);
 			} else {
-				//printf("%d\n",index);
+	
 				switch (commands[index].argCount){
 					case 0:
-						//commands[index].handler();
-
+					
 						if(!strcmp(args[0],"salir")){
 							return 5;
 						}else{
@@ -126,7 +124,7 @@ int parser(char * buff, int sock){
 						commands[index].handler(atoi(args[1]));
 						break;
 					case 2:
-						//commands[index].handler(atoi(args[1]),atoi(args[2]));
+						
 
 						if(!strcmp(args[0],"inscribirse") || !strcmp(args[0],"desinscribirse")){
 							commands[index].handler(atoi(args[2]),atoi(args[1]));
@@ -362,7 +360,7 @@ char * misMaterias(int legacy){
 }
 
 void clear(){
-  for(int i=0; i< 25 ; i++){
+  for(int i=0; i< 60 ; i++){
     printf("\n");
   }
 }

@@ -20,7 +20,7 @@ void init(){
     exit(0);
   }else{
     fprintf(stderr,"Opened database successfully\n");
-    printf("EL VALOR DE RC ES: %d\n", rc);
+    //printf("EL VALOR DE RC ES: %d\n", rc);
   }
  //tableCreation();
 
@@ -187,11 +187,13 @@ void tableCreation(){
 
  /* Create SQL statement */
    sql = "INSERT INTO ALUMNO (LEGAJO,NOMBRE,SEXO,PASSWORD,CARRERA) "  \
-           "VALUES (52000, 'Won, Dae Ro', 'M', 'dwon', 'INFORMATICA'); "\
+           "VALUES (52635, 'Won, Dae Ro', 'M', 'dwon', 'INFORMATICA'); "\
            "INSERT INTO ALUMNO (LEGAJO,NOMBRE,SEXO,PASSWORD,CARRERA) "  \
-           "VALUES (5400, 'Guido, Sebastian Ezequiel', 'M', 'sguido','INFORMATICA');"\
+           "VALUES (54432, 'Guido, Sebastian Ezequiel', 'M', 'sguido','INFORMATICA');"\
            "INSERT INTO ALUMNO (LEGAJO,NOMBRE,SEXO,PASSWORD,CARRERA) "  \
-           "VALUES (53384, 'Castano, Nicolas Martin', 'M', 'ncastano','INFORMATICA');";
+           "VALUES (53384, 'Castano, Nicolas Martin', 'M', 'ncastano','INFORMATICA');" \
+           "INSERT INTO ALUMNO (LEGAJO,NOMBRE,SEXO,PASSWORD,CARRERA) "  \
+           "VALUES (51000, 'Salerno, Roberto Raul', 'M', 'rsalerno','ELECTRONICA');";
 
 
    /* Execute SQL statement */
@@ -231,7 +233,47 @@ void tableCreation(){
            "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
            "VALUES (100, 53384, 2016);"\
            "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
-           "VALUES (120, 53384, 2016);";
+           "VALUES (120, 53384, 2016);" \
+           /*"INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (10, 52635, 2016);" \ */
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (20, 52635, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (30, 52635, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (40, 52635, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (50, 52635, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (10, 54432, 2016);"\
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (20, 54432, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (30, 54432, 2016);"\
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (40, 54432, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (50, 54432, 2016);"\
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (60, 54432, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (80, 54432, 2016);"\
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (70, 54432, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (90, 54432, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (11, 51000, 2016);"\
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (22, 51000, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (33, 51000, 2016);"\
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (44, 51000, 2016);" \
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (55, 51000, 2016);"\
+           "INSERT INTO INSCRIPCION (CODIGO,LEGAJO, ANIO) "  \
+           "VALUES (66, 51000, 2016);";
            
     /* Execute SQL statement */
     query(sql);
@@ -285,7 +327,47 @@ void tableCreation(){
            "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
            "VALUES (53384, 10, 2016, 100, 173); "\
            "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
-           "VALUES (53384, 7, 2016, 120, 124);";
+           "VALUES (53384, 7, 2016, 120, 124);" \
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (52635, 6, 2016, 10, 125);" \
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (52635, 4, 2016, 20, 126);" \
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (52635, 5, 2016, 30, 127);" \
+           /*"INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (52635, 10, 2016, 40, 128);"  \ */ 
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (52635, 5, 2016, 50, 129);" \
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 8, 2016, 10, 130); "\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 8, 2016, 20, 131);"\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 7, 2016, 30, 132); "\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 5, 2016, 40, 133);"\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 3, 2016, 50, 134); "\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 7, 2016, 60, 135);"\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 7, 2016, 70, 136);"\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 10, 2016, 80, 137); "\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (54432, 6, 2016, 90, 138);" \
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (51000, 2, 2016, 11, 150); "\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (51000, 4, 2016, 22, 151);"\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (51000, 7, 2016, 33, 152); "\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (51000, 8, 2016, 44, 153);"\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (51000, 9, 2016, 55, 154); "\
+           "INSERT INTO EXAMEN (LEGAJO,NOTA,FECHA,CODIGO,NROACTA) "  \
+           "VALUES (51000, 10, 2016, 66, 155);";         
     query(sql); //9
 
     /*Creo la tabla Correlativa*/

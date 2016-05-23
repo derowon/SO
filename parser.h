@@ -34,5 +34,8 @@ char* misMaterias(int legacy);
 typedef int (*action)(char *);
 typedef int (* func)();
 
+void clear();
+void limpiarBuffer(Package * pack);
+
 
 #endif

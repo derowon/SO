@@ -109,7 +109,7 @@ int main (int argc, char **argv)
     					memcpy(&pack,buffer,sizeof(Package));
               snprintf(name, 50, "/tmp/client%i", pack.data.sign.studentID);
               fd2 = open(name, O_WRONLY);
-    					printf("RECIBI EN EL DATABASE SERVER studentID : %d  y pass %s\n",pack.data.sign.studentID,pack.pass );
+    					//printf("RECIBI EN EL DATABASE SERVER studentID : %d  y pass %s\n",pack.data.sign.studentID,pack.pass );
     					answer(&pack);
     					memcpy(buffer,&pack,sizeof(Package));
     					write(fd2,buffer,sizeof(Package));
