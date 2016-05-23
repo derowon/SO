@@ -107,14 +107,17 @@ int main (int argc, char **argv)
         while(1){
            num = read(fd,buffer,sizeof(Package));
            if(num>0){
-
+              int aux=0;
     					memcpy(&pack,buffer,sizeof(Package));
               snprintf(name, 50, "/tmp/client%i", pack.data.sign.studentID);
               fd2 = open(name, O_WRONLY);
     					printf("RECIBI EN EL DATABASE SERVER studentID : %d  y pass %s\n",pack.data.sign.studentID,pack.pass );
     					answer(&pack);
+              printf("\ndatabase responding answer %s \n",pack.data.response);
     					memcpy(buffer,&pack,sizeof(Package));
-    					write(fd2,buffer,sizeof(Package));
+    					aux = write(fd2,buffer,sizeof(Package));
+              printf("\n\n AFTER WRITING DB RESPONSE  ****%d***\n\n",aux);
+              sleep(2);
     	        close(fd2);
 
           }
@@ -166,10 +169,10 @@ int main (int argc, char **argv)
                printf("DEPSUES DE ACCEPT4\n"); 
             }
             // receive response from server
-            /*if (mq_receive (qd_client, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
+            if (mq_receive (qd_client, in_buffer, MSG_BUFFER_SIZE, NULL) == -1) {
              perror ("Client: mq_receive");
              exit (1);
-            }*/
+            }
             if(DEBUG){
                printf("DEPSUES DE ACCEPT5\n"); 
             }
@@ -182,7 +185,7 @@ int main (int argc, char **argv)
             
             while(1){
               printf("Ready to listen!\n" );
-              //serverReceivePackage(newconn,&pack);
+              serverReceivePackage(newconn,&pack);
                if(&pack == NULL){
 								 printf("SALIR PORQUE PACK ERA NULL\n" );
                   exit(0);
@@ -208,18 +211,28 @@ int main (int argc, char **argv)
               }
               sem_post(&mutex);
               if(DEBUG){
-               printf("Despues del mutex\n"); 
+                printf("Despues del mutex\n"); 
+                printf("antes del open\n");
+                printf("Opening ***%s***\n",name);
               }
+
               fd2 = open(name,O_RDONLY);
-             	read(fd2,buffer,sizeof(Package));
-             	memcpy(&pack,buffer,sizeof(Package));
+             	if(DEBUG){
+                printf("Antes de enviar al cliente\n");
+                printf("Enviando ----------%s-------------- \n", pack.data.response);
+              }
+              int aux= 0;
+              aux = read(fd2,buffer,sizeof(Package));
+             	printf("\n____________\n%d\n_____________\n",aux);
+              memcpy(&pack,buffer,sizeof(Package));
               if(DEBUG){
-               printf("Antes de enviar al cliente\n");
-               printf("Enviando %s \n", pack.data.response);
+                printf("Antes de enviar al cliente\n");
+                printf("Enviando ----------%s-------------- \n", pack.data.response);
               }
               sendToClient(newconn,&pack);
               if(DEBUG){
                printf("Despues de enviar\n"); 
+               //sleep(20);
               }
 
               close(fd);
@@ -321,14 +334,16 @@ Package * correlatives_db(Package * data){
 
 Package * checkUser_db(Package * data){
   char * buffer;
-
+  
 
   buffer = checkUser(data->data.sign.studentID, data->pass);
 
   printf("VOLVI DEL CHECKUSER");
+ 
 
   if(strcmp(buffer, "USUARIO INCORRECTO") == 0 || strcmp(buffer, "PASSWORD INCORRECTA")==0){
     strcpy(data->data.response, "-1");
+
 
   }else{
     strcpy(data->data.response, "1");

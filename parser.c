@@ -288,6 +288,9 @@ int sesion(int user, char *pass){
 	clientSendPackage(sockfd, &pack);
 	clientReceivePackage(sockfd, &pack);
 
+	printf("login attempt > %d\n",atoi(pack.data.response));
+	sleep(3);
+
 	if(atoi(pack.data.response) == -1){
 		return -1;
 	}else{

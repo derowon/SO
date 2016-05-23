@@ -67,7 +67,12 @@ int clientSendPackage(int con, Package* pack){
 	
 	void* data = calloc(pack->size,1);
   	memcpy(data,pack, pack->size);
-  	//writeaux= open(clientFile,O_WRONLY);
+  	// printf("BEFORE WRITEAUX\n");
+  	// printf("CLIENTFILE ***%s***\n",clientFile);
+  	// sleep(1);
+  	// writeaux= open(clientFile,O_WRONLY);
+  	// printf("After WRITEAUX\n");
+  	// sleep(5);
 	if (write2 <0 || access(SFIFO, F_OK)){
 		printf("Connection failed\n");
 		return -1;
@@ -78,8 +83,10 @@ int clientSendPackage(int con, Package* pack){
 	}else{
 		printf("Data sent correctly\n");
 	}
-	//writeaux= open(clientFile,O_RDONLY);
-	printf("DESPUES DEL OPEN\n");
+	
+
+	// writeaux= open(clientFile,O_RDONLY);
+	//printf("DESPUES DEL OPEN\n");
 	free(data);
 
 	return 0;
@@ -87,29 +94,47 @@ int clientSendPackage(int con, Package* pack){
 
 
 int clientReceivePackage(int con, Package* pack){
+	int aux=0;
 	printf("Awaiting to read response\n");
 	//sprintf(clientFile,"/tmp/cf%d \n",getpid());
 	printf("Attempting to open fd %s\n", clientFile);
+	printf("BEFOREWRITEAUX\n");
+	printf("CLIENTFILE ***%s***\n",clientFile);
+  	printf("ANTES DE OPEN\n");
+  	writeaux= open(clientFile,O_RDONLY);
+  	printf("After WRITEAUX\n");
+  	sleep(0.1);
 
-	while(!read(writeaux, pack, sizeof(int)));
-	printf("After reading\n");
-	int size= *((int*)pack);
+	while(!(aux = read(writeaux, pack, sizeof(int)))){
+		printf("Attempting to read\n");
+		sleep(0.5);
+	}
+	printf("After reading ***%d***\n",aux);
+	int size= sizeof(Package);
 	
-	read(writeaux, ((char*)pack) + sizeof(int), size-sizeof(int));
+	printf("READ *************%d************",read(writeaux, ((char*)pack) + sizeof(int), size-sizeof(int)));
 	
 	printf("The response is %s \n",pack->data.response);
+	sleep(3);
 	//close(read2);
 
 	return 0;
 }
 
 void sendToClient(int newconn,Package * pack){
-	write2= open(clientFile, O_WRONLY);
-	int count=0;
+	printf("OPENING PARA ENVIAR A -----------%s-------- \n", clientFile);
 	
-	count =write(open(clientFile,O_WRONLY), pack, *(int*)pack);
-	memset(pack,0,sizeof(Package));
-	close(write2);
+	write2= open(clientFile, O_WRONLY);
+	printf("AFTER OPENED %s y write devolvio : %d\n", clientFile, write2);
+	sleep(0.5);
+	int count=0;
+	printf("BEFORE WRITE con ans\n_______%s_______\n",pack->data.response);
+	// count =write(open(clientFile,O_WRONLY), &paq, sizeof(Package));
+	count =write(write2, pack, sizeof(Package));
+	printf("after write se escribieron *************%d**********\n", count);
+	sleep(5);
+	memset(&paq,0,sizeof(Package));
+	//close(write2);
 }
 
 int serverReceivePackage(int sender, Package* pack){
@@ -119,7 +144,11 @@ int serverReceivePackage(int sender, Package* pack){
 	printf("After read while\n");
 	int size = * ((int*)pack);
 	read(read2, ((char*)pack) + sizeof(int), size- sizeof(int) );*/
-	sprintf(clientFile, "/tmp/cf%d", pack->clientid);
+	memcpy(pack, &paq, sizeof(Package));
+	sprintf(clientFile, "/tmp/cf%d", paq.clientid);
+	printf("*****************************************************************\n");
+	printf("Received package from client and fileName is : %s \n", clientFile);
+	sleep(0.1);
 	printf("Request coming from pack-> %d with function %d \n", paq.clientid, paq.function);
 	printf("legajo :  %d   Pass :  %s\n", paq.data.sign.studentID, paq.pass);
 	close(read2);
