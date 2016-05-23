@@ -320,6 +320,7 @@ int sesion(int user, char *pass){
 
 	pack.function = CHECK_USER;
 	pack.size= sizeof(Package);
+	pack.clientid=getpid();
 	strcpy(pack.pass,pass);
 
 	pack.data.sign.studentID  = user;
